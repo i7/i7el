@@ -1,0 +1,21 @@
+{% extends 'layout.html' %}
+
+{% block content %}
+<h1>The Inform 7 Extensions Library</h1>
+<div class="col-md-8">
+	<h2>Recently updated extensions</h2>
+</div>
+<div class="col-md-4">
+	<h2>Library statistics</h2>
+	<p>{{ extensions.count }} total extensions</p>
+	<h2>Actions</h2>
+	<ul class="list-unstyled">
+		{% if user %}
+			<li><a href="/admin">Admin</a></li>
+			<li><a href="/logout">Log out</a></li>
+		{% else %}
+			<li><a href="/login">Log in</a></li>
+		{% endif %}
+	</ul>
+</div>
+{% endblock %}
