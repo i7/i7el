@@ -3,9 +3,17 @@
 var _ = require( 'lodash' );
 var urlencodedParser = require( 'body-parser' ).urlencoded({ extended: false });
 
-var authentication = require( '../authentication.js' );
 var db = require( '../../db' );
 var util = require( '../util.js' );
+
+function requireadmin( req, res, next )
+{
+	if ( req.user && req.user.can( 'admin' ) )
+	{
+		return next();
+	}
+	return res.status( 403 ).render( 'error', { type: 'authentication' } );
+}
 
 function preparevars( req )
 {
@@ -19,7 +27,7 @@ function preparevars( req )
 
 module.exports = [
 
-	[ 'get', '', [ authentication.checkadmin, function index( req, res )
+	[ 'get', '', [ requireadmin, function index( req, res )
 		{
 			util.updatesettings()
 				.then( function()
@@ -29,11 +37,11 @@ module.exports = [
 		} 
 	] ],
 		
-	[ 'post', '', [ authentication.checkadmin, urlencodedParser, function update( req, res )
+	[ 'post', '', [ requireadmin, urlencodedParser, function update( req, res )
 		{
 			function normifyresults( data )
 			{
-				return _.map( data.split( '\r\n' ), _.trim ).filter( function(n) { return n; } );
+				return _.map( data.split( '\r\n' ), _.trim ).filter( _.identity );
 			}
 		
 			var settings = req.app.locals.settings;

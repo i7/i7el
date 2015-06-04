@@ -1,0 +1,30 @@
+{% extends 'layout.html' %}
+
+{% block content %}
+<div class="col-md-8 col-md-offset-2">
+	<h1>Upload an extension</h1>
+	{% if error %}
+		<div class="alert alert-danger" role="alert">
+			<p><strong>Extension upload error:</strong> {{ error|safe }}
+		</div>
+	{% endif %}
+	<form action="/extensions/new" method="post" enctype="multipart/form-data">
+		<div class="form-group">
+			<label for="file">Select a file</label>
+			<input type="file" name="file" id="file" accept=".i7x">
+		</div>
+		<div class="form-group">
+			<label>Author declaration</label>
+			<p>By uploading this extension you affirm that:</p>
+			<ul>
+				<li>You have followed the <a href="http://inform7.com/contribute/extensions/">Inform 7 Extensions Guidelines and Checklist</a>
+				<li>You are its author, or you obtained it legally via an open source or Creative Commons licence
+				<li>You allow it to be distributed under the <a href="http://creativecommons.org/licenses/by/4.0/">Creative Commons Attribution licence</a>
+			</ul>
+		</div>
+		<div class="form-group">
+			<button type="submit" class="btn btn-default">Upload</button>
+		</div>
+	</form>
+</div>
+{% endblock %}

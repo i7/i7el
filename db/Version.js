@@ -15,6 +15,7 @@ module.exports = function( sequelize, DataTypes )
 		},
 		code: DataTypes.TEXT,
 		i7versions: DataTypes.ARRAY( DataTypes.TEXT ),
+		// Email address of uploader
 		uploader: DataTypes.TEXT,
 	});
 };

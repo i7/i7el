@@ -19,10 +19,11 @@ function addroutes( app, router )
 	});
 
 	routemulti( router, 'admin', require( './controllers/admin.js' ) );
+	routemulti( router, 'extensions', require( './controllers/extensions.js' ) );
 
 }
 
-// Add RESTful routes for a resource
+// Add RESTful routes for a resource controller
 function routemulti( router, prefix, routes )
 {
 	routes.forEach( function( route )

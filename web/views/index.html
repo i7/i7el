@@ -11,7 +11,12 @@
 	<h2>Actions</h2>
 	<ul class="list-unstyled">
 		{% if user %}
-			<li><a href="/admin">Admin</a></li>
+			{% if user.can( 'create' ) %}
+				<li><a href="/extensions/new">Upload new extension</a></li>
+			{% endif %}
+			{% if user.can( 'admin' ) %}
+				<li><a href="/admin">Admin</a></li>
+			{% endif %}
 			<li><a href="/logout">Log out</a></li>
 		{% else %}
 			<li><a href="/login">Log in</a></li>

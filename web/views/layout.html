@@ -18,9 +18,9 @@
 			</div>
 			<p class="navbar-text navbar-right">
 			{% if user %}
-				Welcome {{ user }} <a href="/logout" class="navbar-link">(Log out)</a>
+				Welcome {{ user.email }} <a href="/logout" class="navbar-link">(Log out)</a>
 			{% else %}
-				<a href="/login" class="navbar-link">Log in</a>
+				<a href="/login" class="navbar-link">Log in with Google</a>
 			{% endif %}
 			</p>
 		</div>

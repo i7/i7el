@@ -25,6 +25,13 @@ var Setting = sequelize.import( __dirname + '/Setting.js' );
 var Extension = sequelize.import( __dirname + '/Extension.js' );
 var Version = sequelize.import( __dirname + '/Version.js' );
 
+Version.belongsTo( Extension );
+Extension.hasMany( Version );
+Extension.belongsTo( Version, {
+	as: 'CurrentVersion',
+	constraints: false,
+});
+
 module.exports = {
     Sequelize: Sequelize,
     sequelize: sequelize,

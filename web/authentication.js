@@ -1,13 +1,12 @@
 // Authentication using Passport and Google OpenID Connect
 
 var _ = require( 'lodash' );
+var GoogleStrategy = require( 'passport-google-openidconnect' ).Strategy;
+var passport = require( 'passport' );
+var session = require( 'express-session' );
 
 function setup( app, router )
 {
-
-	var GoogleStrategy = require( 'passport-google-openidconnect' ).Strategy;
-	var passport = require( 'passport' );
-	var session = require( 'express-session' );
 
 	// Sessions
 	app.use( session({
@@ -25,16 +24,16 @@ function setup( app, router )
 
 	passport.use( new GoogleStrategy( OAUTH_SETTINGS, function( accessToken, refreshToken, profile, done )
 	{
-		done( null, profile._json.email );
+		done( null, new User( app, profile._json.email ) );
 	}) );
 
 	passport.serializeUser( function( user, done )
 	{
-		done( null, user );
+		done( null, user.email );
 	});
 	passport.deserializeUser( function( id, done )
 	{
-		done( null, id );
+		done( null, new User( app, id ) );
 	});
 	
 	// Give the templates the user info
@@ -58,35 +57,30 @@ function setup( app, router )
 
 }
 
-function checkpermissions( user, userlist )
+// User objects
+function User( app, email )
 {
-	if ( user && _.includes( userlist, user ) )
+	this.app = app;
+	this.email = email;
+}
+
+User.prototype.can = function( action, data )
+{
+	// Admins can do all
+	if ( _.includes( this.app.locals.settings.admins, this.email ) )
 	{
 		return 1;
 	}
-}
 
-function checkpermissionsmiddleware( req, res, next, userlist )
-{
-	if ( checkpermissions( req.user, userlist ) )
+	// Should add a ban list...
+	
+	// For now only editors can create new extensions
+	if ( action == 'create' && _.includes( this.app.locals.settings.editors, this.email ) )
 	{
-		return next();
+		return 1;
 	}
-	return res.status( 403 ).render( 'error', { type: 'authentication' } );
-}
-
-function checkadmin( req, res, next )
-{
-	checkpermissionsmiddleware( req, res, next, req.app.locals.settings.admins );
-}
-
-function checkeditor( req, res, next )
-{
-	checkpermissionsmiddleware( req, res, next, req.app.locals.settings.editors );
-}
+};
 
 module.exports = {
 	setup: setup,
-	checkadmin: checkadmin,
-	checkeditor: checkeditor,
 };

@@ -11,11 +11,11 @@ Admin settings -
 {%- endif -%}
 <form action="/admin" method="post">
 	<div class="form-group">
-		<label for="admins">Administrators</label> (one per line)
+		<label for="admins">Administrators</label> (one email per line)
 		<textarea class="form-control" rows="8" name="admins" id="admins">{{ admins }}</textarea>
 	</div>
 	<div class="form-group">
-		<label for="editors">Editors</label> (one per line)
+		<label for="editors">Editors</label> (one email per line)
 		<textarea class="form-control" rows="8" name="editors" id="editors">{{ editors }}</textarea>
 	</div>
 	<div class="form-group">
