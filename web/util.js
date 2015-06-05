@@ -1,9 +1,16 @@
 // Util functions
 
 var _ = require( 'lodash' );
+var speakingurl = require( 'speakingurl' );
 
 var db = require( '../db' );
 var web = require( './index.js' );
+
+// Create URL slugs for extensions
+function slug( title, author )
+{
+	return speakingurl( title + ' by ' + author );
+}
 
 // Function to update settings from the db
 function updatesettings()
@@ -27,5 +34,7 @@ function updatesettings()
 }
 
 module.exports = {
+	padversion: db.Version.padversion,
+	slug: slug,
     updatesettings: updatesettings,
 };

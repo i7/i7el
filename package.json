@@ -15,9 +15,13 @@
     "pg": "^4.2.0",
     "pg-hstore": "^2.3.2",
     "sequelize": "^3.1.1",
+    "speakingurl": "^4.0.0",
     "swig": "^1.4.2"
   },
   "devDependencies": {},
   "author": "Dannii Willis",
-  "license": "ISC"
+  "license": "ISC",
+  "repository": "i7/i7el",
+  "bugs": "https://github.com/i7/i7el/issues",
+  "homepage": "https://github.com/i7/i7el"
 }

@@ -8,7 +8,7 @@ var util = require( '../util.js' );
 
 function requireadmin( req, res, next )
 {
-	if ( req.user && req.user.can( 'admin' ) )
+	if ( req.user && req.user.can.admin )
 	{
 		return next();
 	}

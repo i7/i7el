@@ -62,9 +62,17 @@ function User( app, email )
 {
 	this.app = app;
 	this.email = email;
+	this.can = {};
+	
+	// Fill out the permissions
+	var i = 0, actions = [ 'admin', 'create', 'editany' ];
+	for ( ; i < actions.length ; i++ )
+	{
+		this.can[ actions[i] ] = this.testpermission( actions[i] );
+	}
 }
 
-User.prototype.can = function( action, data )
+User.prototype.testpermission = function( action )
 {
 	// Admins can do all
 	if ( _.includes( this.app.locals.settings.admins, this.email ) )
@@ -75,10 +83,14 @@ User.prototype.can = function( action, data )
 	// Should add a ban list...
 	
 	// For now only editors can create new extensions
-	if ( action == 'create' && _.includes( this.app.locals.settings.editors, this.email ) )
+	if ( _.includes( this.app.locals.settings.editors, this.email ) )
 	{
-		return 1;
+		if ( action == 'create' || action == 'editany' )
+		{
+			return 1;
+		}
 	}
+	return 0;
 };
 
 module.exports = {

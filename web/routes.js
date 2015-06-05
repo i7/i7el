@@ -11,7 +11,7 @@ function addroutes( app, router )
 	router.get( '/', function( req, res )
 	{
 		db.Extension.findAndCountAll({
-			order: 'updatedAt',
+			order: [[ 'updatedAt', 'DESC' ]],
 			limit: 10
 		}).then( function( result ) {
 			res.render( 'index', { extensions: result } );
