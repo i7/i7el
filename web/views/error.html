@@ -16,7 +16,10 @@
 			{% if !user %}
 				<p>Please <a class="alert-link" href="/login">log in</a>
 			{% endif %}
-			
+		
+		{% elif msg %}
+			<p><strong>{{ msg }}</strong>
+		
 		{% else %}
 			<p><strong>Unknown error</strong>
 			

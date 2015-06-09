@@ -1,7 +1,5 @@
 // Route definitions
 
-var _ = require( 'lodash' );
-
 var db = require( '../db' );
 
 function addroutes( app, router )
@@ -18,8 +16,8 @@ function addroutes( app, router )
 		});
 	});
 
-	routemulti( router, 'admin', require( './controllers/admin.js' ) );
-	routemulti( router, 'extensions', require( './controllers/extensions.js' ) );
+	require( './controllers/admin.js' )( router );
+	require( './controllers/extensions.js' )( router );
 	
 	// Error handling
 	app.use( function( err, req, res, next )
@@ -39,16 +37,8 @@ function routemulti( router, prefix, routes )
 	routes.forEach( function( route )
 	{
 		// route = [ method, path, [func(s)] ]
-		var path = '/' + prefix + ( route[1] ? '/' + route[1] : '' );
-		if ( _.isArray( route[2] ) )
-		{
-			route[2].unshift( path );
-		}
-		else
-		{
-			route[2] = [ path, route[2] ];
-		}
-		router[ route[0] ].apply( router, route[2] );
+		var path = ( prefix ? '/' + prefix : '' ) + ( route[1] ? '/' + route[1] : '' );
+		router[ route[0] ]( path, route[2] );
 	});
 }
 

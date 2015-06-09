@@ -1,0 +1,26 @@
+{% extends 'layout.html' %}
+
+{% block content %}
+<h1>{{ title }} by {{ author }}</h1>
+{% if alert %}
+	<div class="alert alert-{{ alert.type|lower }}" role="alert">
+		<p><strong>{{ alert.type|title }}:</strong> {{ alert.msg }}
+	</div>
+{% endif %}
+<div class="col-md-8">
+	<h2>Description</h2>
+	<p>{{ description }}</p>
+</div>
+<div class="col-md-4">
+	<h2>Versions</h2>
+	<p><a class="btn btn-lg btn-primary btn-block" href="/extensions/{{ slug }}/versions/{{ currentversion }}">Download current version {{ currentversion }}</a>
+	<p><a href="/extensions/{{ slug }}/versions">View all versions</a>
+	{% if user && user.can.editthis %}
+		<h2>Actions</h2>
+		<ul class="list-unstyled">
+			<li><a href="/extensions/new">Upload a new version</a></li>
+			<li><a href="/extensions/{{ slug }}/edit">Edit</a></li>
+		</ul>
+	{% endif %}
+</div>
+{% endblock %}

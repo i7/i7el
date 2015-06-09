@@ -95,7 +95,7 @@ User.prototype.testpermission = function( action )
 	// For now only editors can create new extensions
 	if ( _.includes( this.app.locals.settings.editors, this.email ) )
 	{
-		if ( action == 'create' || action == 'editany' )
+		if ( [ 'create', 'editany', 'editthis' ].indexOf( action ) >= 0 )
 		{
 			return 1;
 		}

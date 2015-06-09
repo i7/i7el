@@ -28,5 +28,12 @@ module.exports = function( sequelize, DataTypes )
 				callback();
 			},
 		},
+		instanceMethods:
+		{
+			stable: function()
+			{
+				return new Date() - new Date( this.createdAt ) > 86400000;
+			},
+		},
 	});
 };

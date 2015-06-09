@@ -8,11 +8,6 @@
 			<p><strong>Extension upload error:</strong> {{ error|safe }}
 		</div>
 	{% endif %}
-	{% if success %}
-		<div class="alert alert-success" role="alert">
-			<p><strong>Success:</strong> {{ success }}
-		</div>
-	{% endif %}
 	<form action="/extensions/new" method="post" enctype="multipart/form-data">
 		<div class="form-group">
 			<label for="file">Select a file</label>
