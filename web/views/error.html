@@ -1,9 +1,16 @@
 {% extends 'layout.html' %}
 
 {% block content %}
+
+{% if type == 'unhandlederror' %}
+<div class="alert alert-danger" role="alert">
+		<p><strong>Unhandled Error</strong>
+		<p><pre>{{ stack }}</pre>
+</div>
+{% else %}
+
 <div class="col-md-6 col-md-offset-3">
 	<div class="alert alert-danger" role="alert">
-	
 		{% if type == 'authentication' %}
 			<p><strong>User not authorised</strong>
 			{% if !user %}
@@ -11,9 +18,12 @@
 			{% endif %}
 			
 		{% else %}
-			<strong>Unknown error</strong>
+			<p><strong>Unknown error</strong>
 			
 		{% endif %}
 	</div>
 </div>
+
+{% endif %}
+
 {% endblock %}

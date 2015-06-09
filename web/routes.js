@@ -20,6 +20,16 @@ function addroutes( app, router )
 
 	routemulti( router, 'admin', require( './controllers/admin.js' ) );
 	routemulti( router, 'extensions', require( './controllers/extensions.js' ) );
+	
+	// Error handling
+	app.use( function( err, req, res, next )
+	{
+		console.error( err.stack );
+		return res.status( 500 ).render( 'error', {
+			type: 'unhandlederror',
+			stack: err.stack,
+		});
+	});
 
 }
 

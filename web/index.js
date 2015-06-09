@@ -27,6 +27,8 @@ if ( process.env.NODE_ENV && process.env.NODE_ENV == 'development' )
 
 authentication.setup( app, router );
 
+app.use( router );
+
 routes.addroutes( app, router );
 
 exports.app = app;

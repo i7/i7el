@@ -19,7 +19,6 @@ db.sequelize.sync()
 	.then( function()
 	{
 		// Start the server!
-		app.use( web.router );
 		var server = app.listen( app.get( 'port' ), function()
 		{
 			console.log( 'Express server listening on port ' + app.get( 'port' ) );
