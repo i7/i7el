@@ -11,10 +11,11 @@
     "lodash": "^3.9.3",
     "multer": "^0.1.8",
     "passport": "^0.2.2",
-    "passport-google-openidconnect": "^0.0.4",
+    "passport-google-openidconnect": "0.0.4",
     "pg": "^4.2.0",
     "pg-hstore": "^2.3.2",
     "sequelize": "^3.1.1",
+    "session-file-store": "0.0.13",
     "speakingurl": "^4.0.0",
     "swig": "^1.4.2"
   },

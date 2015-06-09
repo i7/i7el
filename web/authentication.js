@@ -4,8 +4,9 @@ var _ = require( 'lodash' );
 var GoogleStrategy = require( 'passport-google-openidconnect' ).Strategy;
 var passport = require( 'passport' );
 var session = require( 'express-session' );
+var FileStore = require( 'session-file-store' )( session );
 
-function setup( app, router )
+function setup( app )
 {
 
 	// Sessions
@@ -13,6 +14,9 @@ function setup( app, router )
 		resave: false,
 		saveUninitialized: false,
 		secret: process.env.APP_SECRET,
+		store: new FileStore({
+			path: './.sessions',
+		}),
 	}) );
 
 	app.use( passport.initialize() );
@@ -35,24 +39,30 @@ function setup( app, router )
 	{
 		done( null, new User( app, id ) );
 	});
+
+	// Routes for logging in and out
+	function returnFromGoogle( req, res )
+	{
+		var path = req.session.returnTo || '/';
+		req.session.returnTo = null;
+		res.redirect( path );
+	}
+	
+	app.get( '/login', passport.authenticate( 'google-openidconnect' ) );
+	app.get( '/login/return', passport.authenticate( 'google-openidconnect' ), returnFromGoogle );
+	app.get( '/logout', function( req, res, next )
+	{
+		req.logout();
+		next();
+	}, returnFromGoogle );
 	
 	// Give the templates the user info
 	app.use( function( req, res, next )
 	{
 		res.locals.user = req.user;
+		// Store the current page for when the user logs in or out
+		req.session.returnTo = req.path;
 		next();
-	});
-
-	// Routes for logging in and out
-	router.get( '/login', passport.authenticate( 'google-openidconnect' ) );
-	router.get( '/login/return', passport.authenticate( 'google-openidconnect', {
-		failureRedirect: '/',
-		successRedirect: '/',
-	}) );
-	router.get( '/logout', function( req, res )
-	{
-		req.logout();
-		res.redirect( '/' );
 	});
 
 }

@@ -25,7 +25,7 @@ if ( process.env.NODE_ENV && process.env.NODE_ENV == 'development' )
 	swig.setDefaults({ cache: false });
 }
 
-authentication.setup( app, router );
+authentication.setup( app );
 
 app.use( router );
 
