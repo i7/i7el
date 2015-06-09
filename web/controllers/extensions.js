@@ -83,18 +83,13 @@ module.exports = [
 				return creation_error( 'Unexpected error while extracting extension details' );
 			}
 			
-			var versionnum = util.padversion( details[1] );
+			var versionnum = details[1];
 			var title = details[2];
 			var author = details[3];
 			
 			if ( title == '' || author == '' )
 			{
 				return creation_error( 'The extension title and author are not allowed to be blank' );
-			}
-			
-			if ( parseInt( versionnum, 10 ) > 999 )
-			{
-				return creation_error( 'Version numbers are only allowed to be up to three digits long' );
 			}
 			
 			// Check if the extension has been uploaded before
@@ -107,7 +102,7 @@ module.exports = [
 			{
 				new_props.maintainer = user.email;
 			}
-			db.Extension.findOrCreate( {
+			db.Extension.findOrCreate({
 				where: { slug: slug },
 				defaults: new_props,
 			})
@@ -125,7 +120,7 @@ module.exports = [
 						code: data,
 						uploader: user.email,
 					};
-					db.Version.findOrCreate( {
+					db.Version.findOrCreate({
 						where: {
 							version: versionnum,
 							ExtensionId: ext.id,

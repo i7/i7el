@@ -2,6 +2,8 @@
 
 var Sequelize = require( 'sequelize' );
 
+var hooks = require( './hooks.js' );
+
 // Connect to the database
 if ( !process.env.DATABASE_URL )
 {
@@ -32,10 +34,14 @@ Extension.belongsTo( Version, {
 	constraints: false,
 });
 
-module.exports = {
+exports = {
     Sequelize: Sequelize,
     sequelize: sequelize,
     Setting: Setting,
     Extension: Extension,
     Version: Version,
 };
+
+hooks( exports );
+
+module.exports = exports;

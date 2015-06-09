@@ -34,7 +34,6 @@ function updatesettings()
 }
 
 module.exports = {
-	padversion: db.Version.padversion,
 	slug: slug,
     updatesettings: updatesettings,
 };

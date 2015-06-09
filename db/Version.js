@@ -1,32 +1,32 @@
-// Pad a version number
-function padversion( version )
-{
-	return ( '00' + version ).substr( -10 );
-}
-
 module.exports = function( sequelize, DataTypes )
 {
 	return sequelize.define( "Version", {
 		version: {
-			type: DataTypes.TEXT,
-			// Force the stored version number to be 3 digits so that sorting will work correctly.
-			// Note that searches for particular versions must use padded version numbers
+			// Store the version number as a decimal number
+			type: DataTypes.DECIMAL,
 			get: function()
 			{
-				return this.getDataValue( 'version' ).replace( /^0+/, '' );
+				return this.getDataValue( 'version' ).replace( '.', '/' );
 			},
 			set: function( value )
 			{
-				this.setDataValue( 'version', padversion( value ) );
+				this.setDataValue( 'version', value.replace( '/', '.' ) );
 			},
 		},
 		code: DataTypes.TEXT,
-		i7versions: DataTypes.ARRAY( DataTypes.TEXT ),
+		i7versions: DataTypes.TEXT,
 		// Email address of uploader
 		uploader: DataTypes.TEXT,
 	}, {
-		classMethods: {
-			padversion: padversion,
+		hooks: {
+			beforeFind: function( options, callback )
+			{
+				if ( options.where && options.where.version )
+				{
+					options.where.version = options.where.version.replace( '/', '.' );
+				}
+				callback();
+			},
 		},
 	});
 };
