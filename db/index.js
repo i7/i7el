@@ -27,21 +27,24 @@ var Setting = sequelize.import( __dirname + '/Setting.js' );
 var Extension = sequelize.import( __dirname + '/Extension.js' );
 var Version = sequelize.import( __dirname + '/Version.js' );
 
+// Set up the relations
 Version.belongsTo( Extension );
 Extension.hasMany( Version );
 Extension.belongsTo( Version, {
 	as: 'CurrentVersion',
+	foreignKey: 'currentVersion',
+	targetKey: 'version',
 	constraints: false,
 });
 
-exports = {
-    Sequelize: Sequelize,
-    sequelize: sequelize,
-    Setting: Setting,
-    Extension: Extension,
-    Version: Version,
+var db = {
+	Sequelize: Sequelize,
+	sequelize: sequelize,
+	Setting: Setting,
+	Extension: Extension,
+	Version: Version,
 };
 
-hooks( exports );
+hooks( db );
 
-module.exports = exports;
+module.exports = db;

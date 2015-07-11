@@ -11,7 +11,9 @@ module.exports = function( sequelize, DataTypes )
 		maintainer: DataTypes.TEXT,
 		// Approved for the public library
 		approved: DataTypes.BOOLEAN,
-		// description
+		// Description and documentation in Markdown
+		description: DataTypes.TEXT,
+		documentation: DataTypes.TEXT,
 		// categories/tags
 	});
 };

@@ -1,6 +1,7 @@
 // Extension controller
 
 var _ = require( 'lodash' );
+var contentDisposition = require( 'content-disposition' );
 var multer  = require( 'multer' );
 
 var authentication = require( '../authentication.js' );
@@ -203,8 +204,9 @@ routes.routemulti( router, 'extensions', [
 			slug: ext.slug,
 			title: ext.title,
 			author: ext.author,
+			currentversion: ext.currentVersion,
 			description: ext.description || '',
-			currentversion: ext.CurrentVersion.version,
+			documentation: ext.documentation || '',
 		};
 		if ( req.session.alert )
 		{
@@ -244,7 +246,7 @@ routes.routemulti( router, 'extensions', [
 				// Success - send the file
 				//res.type( 'text/x-natural-inform-extension' );
 				res.type( 'text/plain' );
-				res.set( 'Content-Disposition', 'inline; filename="' + encodeURI( result.Extension.title + '.i7x' ) + '"' );
+				res.set( 'Content-Disposition', contentDisposition( result.Extension.title + '.i7x', { type: 'inline' } ) );
 				if ( result.stable() )
 				{
 					res.set( 'Cache-Control: max-age=31536000' );

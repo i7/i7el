@@ -10,12 +10,18 @@ function add_hooks( db )
 			},
 			// TODO account for i7versions
 			order: [[ 'version', 'DESC' ]],
+			transaction: options.transaction,
 		})
 			.then( function( current_version )
 			{
 				return db.Extension.update(
-					{ CurrentVersionId: current_version.id },
-					{ where: { id: instance.ExtensionId } }
+					{
+						currentVersion: current_version.version,
+					},
+					{
+						where: { id: instance.ExtensionId },
+						transaction: options.transaction,
+					}
 				);
 			})
 			.then( function()
