@@ -4,11 +4,12 @@ i7el - The Inform 7 Extensions Library
 ======================================
 
 Copyright (c) 2015, The i7el team
-ISC licenced
+MIT licenced
 https://github.com/i7/i7el
 
 */
 
+console.log( 'i7el: Starting up' );
 var db = require( './db' );
 var web = require( './web' );
 

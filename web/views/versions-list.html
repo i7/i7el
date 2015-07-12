@@ -1,0 +1,32 @@
+{% extends 'layout.html' %}
+
+{% block content %}
+<h1>{{ title }} by {{ author }}</h1>
+<p><a href="/extensions/{{ slug }}"><span class="glyphicon glyphicon-arrow-left" aria-hidden="true"></span> Back to this extension</a>
+<table class="table">
+	<thead>
+		<tr>
+			<th>Version</th>
+			<th>Actions</th>
+			<th>Compatible Inform 7 versions</th>
+			<th>Uploaded on</th>
+			{% if user && user.can.editthis %}
+				<th>Uploaded by</th>
+			{% endif %}
+		</tr>
+	</thead>
+	<tbody>
+		{% for version in versions %}
+			<tr{% if version.version == currentversion %} class="info"{% endif %}>
+				<td>{{ version.version }}</td>
+				<td><a class="btn btn-default " href="/extensions/{{ slug }}/versions/{{ version.version }}" role="button"><span class="glyphicon glyphicon-save" aria-hidden="true"></span> Download</a></td>
+				<td>{{ version.i7versions }}</td>
+				<td>{{ version.createdAt|date('F j, Y') }}</td>
+				{% if user && user.can.editthis %}
+					<td><a href="mailto:{{ version.uploader }}">{{ version.uploader }}</a></td>
+				{% endif %}
+			</tr>
+		{% endfor %}
+	</tbody>
+</table>
+{% endblock %}

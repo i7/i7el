@@ -39,11 +39,7 @@ router.param( 'ext', function( req, res, next, slug )
 		return res.status( 400 ).render( 'error', { msg: 'Invalid extension URL' } );
 	}
 	// Find this extension
-	db.Extension.findOne(
-	{
-		where: { slug: slug },
-		include: [ { model: db.Version, as: 'CurrentVersion' } ],
-	})
+	db.Extension.findOne({ where: { slug: slug } })
 		.then( function ( result )
 		{
 			if ( !result )
@@ -218,6 +214,23 @@ routes.routemulti( router, 'extensions', [
 ] ],
 
 // Show the list of versions
+[ 'get', ':ext/versions', [ function list_versions( req, res )
+	{
+		var ext = req.extension;
+		ext.getVersions()
+			.then( function( results )
+			{
+				var data = {
+					slug: ext.slug,
+					title: ext.title,
+					author: ext.author,
+					currentversion: ext.currentVersion,
+					versions: results,
+				};
+				res.render( 'versions-list', data );
+			});
+	} 
+] ],
 
 // Download a particular version
 [ 'get', ':slug/versions/:major/:date', [ function getversion( req, res )

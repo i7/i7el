@@ -11,7 +11,7 @@
 {% endif %}
 <div class="col-md-4">
 	<h2>Versions</h2>
-	<p><a class="btn btn-lg btn-primary btn-block" href="/extensions/{{ slug }}/versions/{{ currentversion }}">Download current version {{ currentversion }}</a>
+	<p><a class="btn btn-lg btn-primary btn-block" href="/extensions/{{ slug }}/versions/{{ currentversion }}"><span class="glyphicon glyphicon-save" aria-hidden="true"></span> Download current version {{ currentversion }}</a>
 	<p><a href="/extensions/{{ slug }}/versions">View all versions</a>
 	{% if user && user.can.editthis %}
 		<h2>Actions</h2>
