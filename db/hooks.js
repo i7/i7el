@@ -1,3 +1,5 @@
+var _ = require( 'lodash' );
+
 function add_hooks( db )
 {
 	
@@ -8,21 +10,24 @@ function add_hooks( db )
 			where: {
 				ExtensionId: instance.ExtensionId,
 			},
-			// TODO account for i7versions
-			order: [[ 'version', 'DESC' ]],
+			// Default scope ordering is used to pick the latest version
 			transaction: options.transaction,
 		})
 			.then( function( current_version )
 			{
-				return db.Extension.update(
-					{
-						currentVersion: current_version.version,
-					},
-					{
-						where: { id: instance.ExtensionId },
-						transaction: options.transaction,
-					}
-				);
+				var data = { currentVersion: current_version.version };
+				
+				// Extract documenation
+				var docs = current_version.code.match( /-{3,} +DOCUMENTATION +-{3,}([\s\S]+$)/i );
+				if ( docs )
+				{
+					data.documentation = _.trim( docs[1] );
+				}
+		
+				return db.Extension.update( data, {
+					where: { id: instance.ExtensionId },
+					transaction: options.transaction,
+				});
 			})
 			.then( function()
 			{
