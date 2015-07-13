@@ -16,8 +16,8 @@
     "pg": "^4.2.0",
     "pg-hstore": "^2.3.2",
     "sequelize": "^3.1.1",
-    "session-file-store": "0.0.13",
-    "speakingurl": "^4.0.0",
+    "session-file-store": "0.0.14",
+    "speakingurl": "^5.0.0",
     "swig": "^1.4.2"
   },
   "devDependencies": {},

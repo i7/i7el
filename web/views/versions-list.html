@@ -1,14 +1,21 @@
 {% extends 'layout.html' %}
 
+{% block title %}{{ title }} by {{ author }} - {% endblock %}
+
 {% block content %}
 <h1>{{ title }} by {{ author }}</h1>
+{% if alert %}
+	<div class="alert alert-{{ alert.type|lower }}" role="alert">
+		<p><strong>{{ alert.type|title }}:</strong> {{ alert.msg }}
+	</div>
+{% endif %}
 <p><a href="/extensions/{{ slug }}"><span class="glyphicon glyphicon-arrow-left" aria-hidden="true"></span> Back to this extension</a>
 <table class="table">
 	<thead>
 		<tr>
 			<th>Version</th>
-			<th>Actions</th>
-			<th>Compatible Inform 7 versions</th>
+			<th>Download</th>
+			<th>Compatible Inform 7 releases</th>
 			<th>Uploaded on</th>
 			{% if user && user.can.editthis %}
 				<th>Uploaded by</th>
@@ -17,10 +24,10 @@
 	</thead>
 	<tbody>
 		{% for version in versions %}
-			<tr{% if version.version == currentversion %} class="info"{% endif %}>
+			<tr{% if version.version == currentVersion %} class="info"{% endif %}>
 				<td>{{ version.version }}</td>
-				<td><a class="btn btn-default " href="/extensions/{{ slug }}/versions/{{ version.version }}" role="button"><span class="glyphicon glyphicon-save" aria-hidden="true"></span> Download</a></td>
-				<td>{{ version.i7versions }}</td>
+				<td><a class="btn btn-default" href="/extensions/{{ slug }}/versions/{{ version.version }}" role="button"><span class="glyphicon glyphicon-save" aria-hidden="true"></span> Download</a></td>
+				<td>{% if user && user.can.editthis %}<a href="/extensions/{{ slug }}/versions/{{ version.version }}/edit" title="Edit releases" aria-label="Edit releases"><span class="glyphicon glyphicon-pencil" aria-hidden="true"></span></a> {% endif %}{{ version.i7releases|replace(' ', ', ', 'g') }}</td>
 				<td>{{ version.createdAt|date('F j, Y') }}</td>
 				{% if user && user.can.editthis %}
 					<td><a href="mailto:{{ version.uploader }}">{{ version.uploader }}</a></td>

@@ -2,6 +2,7 @@
 
 var _ = require( 'lodash' );
 var contentDisposition = require( 'content-disposition' );
+var urlencodedParser = require( 'body-parser' ).urlencoded({ extended: false });
 var multer  = require( 'multer' );
 
 var authentication = require( '../authentication.js' );
@@ -18,20 +19,14 @@ var multerparser = multer({
 	putSingleFilesInArray: true,
 });
 
-function requirecreatepermissions( req, res, next )
-{
-	if ( req.user && req.user.can.create )
-	{
-		return next();
-	}
-	return res.status( 403 ).render( 'error', { type: 'authentication' } );
-}
+var requireCreatePermissions = util.requirePermission( 'create' );
+var requireEditThisPermissions = util.requirePermission( 'editthis' );
 
 module.exports = function( router )
 {
 
-// Define the :ext parameter
-router.param( 'ext', function( req, res, next, slug )
+// Define the :slug parameter
+router.param( 'slug', function( req, res, next, slug )
 {
 	// Check for valid slugs
 	if ( !/^[\da-z_-]+$/.test( slug ) )
@@ -51,6 +46,37 @@ router.param( 'ext', function( req, res, next, slug )
 			{
 				req.user.can.editthis = result.maintainer == req.user.email || req.user.can.editany;
 			}
+			_.extend( res.locals, {
+				slug: slug,
+				title: result.title,
+				author: result.author,
+				currentVersion: result.currentVersion,
+				i7releases: req.app.locals.settings.releases,
+			});
+			next();
+		});
+});
+
+// Handle the :major and :data parameters
+router.param( 'date', function( req, res, next, date )
+{
+	var version = req.params.major + '/' + date;
+	if ( !/^\d+\/\d{6}$/.test( version ) )
+	{
+		return res.status( 400 ).render( 'error', { msg: 'Invalid extension URL' } );
+	}
+	// Search for this version
+	req.extension.getVersions({ where: { version: version } })
+		.then( function ( result )
+		{
+			if ( !result || !result.length )
+			{
+				return res.status( 404 ).render( 'error', { msg: 'Extension version not found' } );
+			}
+			req.version = result[0];
+			_.extend( res.locals, {
+				version: result[0].version,
+			});
 			next();
 		});
 });
@@ -64,13 +90,13 @@ routes.routemulti( router, 'extensions', [
 ] ],
 
 // Create or update an extension
-[ 'get', 'new', [ requirecreatepermissions, function newext( req, res )
+[ 'get', 'new', [ requireCreatePermissions, function newext( req, res )
 	{
 		res.render( 'extensions-new', {} );
 	} 
 ] ],
 	
-[ 'post', 'new', [ requirecreatepermissions, multerparser, function create( req, res )
+[ 'post', 'new', [ requireCreatePermissions, multerparser, function create( req, res )
 	{
 		var user = req.user;
 		
@@ -137,10 +163,10 @@ routes.routemulti( router, 'extensions', [
 			where: { slug: slug },
 			defaults: new_props,
 		})
-			.spread( function( ext, created )
+			.spread( function( ext, extcreated )
 			{
 				// The extension is pre-existing but this user is not the maintainer or an editor
-				if ( !created && ext.maintainer != user.email && !user.can.editany )
+				if ( !extcreated && ext.maintainer != user.email && !user.can.editany )
 				{
 					// TODO: Better handling here - give a link to the extension + explain how to request maintainership
 					return creation_error( 'This extension is currently maintained by someone else' );
@@ -158,10 +184,10 @@ routes.routemulti( router, 'extensions', [
 					},
 					defaults: new_code,
 				})
-					.spread( function( version, created )
+					.spread( function( version, verscreated )
 					{
 						// If it already exists, only update during the 1 day grace period
-						if ( !created )
+						if ( !verscreated )
 						{
 							if ( version.stable() )
 							{
@@ -183,8 +209,9 @@ routes.routemulti( router, 'extensions', [
 						{
 							req.session.alert = {
 								type: 'Success',
-								msg: 'Extension uploaded',
+								msg: extcreated ? 'Extension uploaded' : 'Extension version uploaded',
 							};
+							//req.session.showdialog = 1;
 							res.redirect ( '/extensions/' + slug );
 						}
 					});
@@ -193,14 +220,10 @@ routes.routemulti( router, 'extensions', [
 ] ],
 
 // The main extension page
-[ 'get', ':ext', [ function show( req, res )
+[ 'get', ':slug', [ function show( req, res )
 	{
 		var ext = req.extension;
 		var data = {
-			slug: ext.slug,
-			title: ext.title,
-			author: ext.author,
-			currentversion: ext.currentVersion,
 			description: ext.description || '',
 			documentation: ext.documentation || '',
 		};
@@ -209,64 +232,94 @@ routes.routemulti( router, 'extensions', [
 			data.alert = req.session.alert;
 			delete req.session.alert;
 		}
+		/*// Show the I7 releases dialog when first creating an extension
+		if ( !req.session.showdialog )
+		{
+			data.showdialog = 1;
+			data.js = {
+				i7releases: req.app.locals.settings.releases,
+			};
+			delete req.session.showdialog;
+		}*/
 		res.render( 'extensions-show', data );
-	} 
+	}
 ] ],
 
 // Show the list of versions
-[ 'get', ':ext/versions', [ function list_versions( req, res )
+[ 'get', ':slug/versions', [ function list_versions( req, res )
 	{
-		var ext = req.extension;
-		ext.getVersions()
+		var data = {};
+		if ( req.session.alert )
+		{
+			data.alert = req.session.alert;
+			delete req.session.alert;
+		}
+		req.extension.getVersions()
 			.then( function( results )
 			{
-				var data = {
-					slug: ext.slug,
-					title: ext.title,
-					author: ext.author,
-					currentversion: ext.currentVersion,
-					versions: results,
-				};
+				data.versions = results;
+				req.session.returnFromVersionEdit = req.path;
 				res.render( 'versions-list', data );
 			});
-	} 
+	}
 ] ],
 
 // Download a particular version
 [ 'get', ':slug/versions/:major/:date', [ function getversion( req, res )
 	{
-		var params = req.params;
-		var version = req.params.major + '/' + req.params.date;
-		if ( !/^[a-z\d_-]+$/.test( params.slug ) || !/^\d+\/\d{6}$/.test( version ) )
+		// Send the file
+		//res.type( 'text/x-natural-inform-extension' );
+		res.type( 'text/plain' );
+		res.set( 'Content-Disposition', contentDisposition( req.extension.title + '.i7x', { type: 'inline' } ) );
+		if ( req.version.stable() )
 		{
-			return res.status( 400 ).render( 'error', { msg: 'Invalid extension URL' } );
+			res.set( 'Cache-Control', 'max-age=31536000' );
 		}
-		// Search for this version
-		db.Version.findOne(
+		res.send( req.version.code );
+	}
+] ],
+
+// Edit the i7releases of a version
+[ 'get', ':slug/versions/:major/:date/edit', [ requireEditThisPermissions, function editi7releases( req, res )
+	{
+		var data = {
+			thisi7releases: req.version.i7releases ? req.version.i7releases.split( ' ' ) : [],
+			returnPath: req.session.returnFromVersionEdit || '/extensions/' + req.params.slug,
+		};
+		res.render( 'versions-edit', data );
+	}
+] ],
+
+// Edit the i7releases of a version
+[ 'post', ':slug/versions/:major/:date', [ requireEditThisPermissions, urlencodedParser, function savei7releases( req, res )
+	{
+		// Handle some potentially bad input
+		var releases = req.body.i7releases;
+		if ( releases )
 		{
-			where: { version: version },
-			include: [ {
-				model: db.Extension,
-				where: { slug: params.slug },
-			} ],
-		})
-			.then( function ( result )
+			if ( !_.isArray( releases ) )
 			{
-				if ( !result )
-				{
-					return res.status( 404 ).render( 'error', { msg: 'Extension version not found' } );
-				}
-				// Success - send the file
-				//res.type( 'text/x-natural-inform-extension' );
-				res.type( 'text/plain' );
-				res.set( 'Content-Disposition', contentDisposition( result.Extension.title + '.i7x', { type: 'inline' } ) );
-				if ( result.stable() )
-				{
-					res.set( 'Cache-Control: max-age=31536000' );
-				}
-				res.send( result.code );
+				releases = [ releases ];
+			}
+			releases = _( releases ).map( _.trim ).filter().sort().reverse().join( ' ' );
+		}
+		if ( !releases )
+		{
+			releases = null;
+		}
+		req.version.i7releases = releases;
+		req.version.save()
+			.then( function()
+			{
+				req.session.alert = {
+					type: 'Success',
+					msg: 'Version ' + req.version.version + ' updated',
+				};
+				var path = req.session.returnFromVersionEdit || '/extensions/' + req.params.slug;
+				req.session.returnFromVersionEdit = null;
+				res.redirect( path );
 			});
-	} 
+	}
 ] ],
 
 ] );

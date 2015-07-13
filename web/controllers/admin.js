@@ -7,14 +7,7 @@ var db = require( '../../db' );
 var routes = require( '../routes.js' );
 var util = require( '../util.js' );
 
-function requireadmin( req, res, next )
-{
-	if ( req.user && req.user.can.admin )
-	{
-		return next();
-	}
-	return res.status( 403 ).render( 'error', { type: 'authentication' } );
-}
+var requireadmin = util.requirePermission( 'admin' );
 
 function preparevars( req )
 {
@@ -22,7 +15,7 @@ function preparevars( req )
 	return {
 		admins: settings.admins.join( '\n' ),
 		editors: settings.editors.join( '\n' ),
-		versions: settings.versions.join( '\n' ),
+		releases: settings.releases.join( '\n' ),
 	};
 }
 
@@ -45,13 +38,13 @@ routes.routemulti( router, 'admin', [
 	{
 		function normifyresults( data )
 		{
-			return _.map( data.split( '\r\n' ), _.trim ).filter( _.identity );
+			return _( data || '' ).split( '\r\n' ).map( _.trim ).filter().sort();
 		}
 	
 		var settings = req.app.locals.settings;
 		settings.admins = normifyresults( req.body.admins );
 		settings.editors = normifyresults( req.body.editors );
-		settings.versions = normifyresults( req.body.versions );
+		settings.releases = normifyresults( req.body.releases ).reverse();
 		
 		db.Setting.findOne({ where: { key: 'core' } })
 			.then( function( result )

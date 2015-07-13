@@ -6,6 +6,19 @@ var speakingurl = require( 'speakingurl' );
 var db = require( '../db' );
 var web = require( './index.js' );
 
+// Generate a middleware for permissions
+function requirePermission( permission )
+{
+	return function( req, res, next )
+	{
+		if ( req.user && req.user.can[ permission ] )
+		{
+			return next();
+		}
+		return res.status( 403 ).render( 'error', { type: 'authentication' } );
+	};
+}
+
 // Create URL slugs for extensions
 function slug( title, author )
 {
@@ -23,7 +36,7 @@ function updatesettings()
 			app.locals.settings = {
 				admins: [],
 				editors: [],
-				versions: [],
+				releases: [],
 			};
 			if ( results )
 			{
@@ -34,6 +47,7 @@ function updatesettings()
 }
 
 module.exports = {
+	requirePermission: requirePermission,
 	slug: slug,
     updatesettings: updatesettings,
 };

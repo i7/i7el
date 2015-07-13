@@ -1,0 +1,31 @@
+{% extends 'layout.html' %}
+
+{% block title %}{{ title }} by {{ author }} - {% endblock %}
+
+{% block content %}
+<div class="col-md-8 col-md-offset-2">
+	<h1>{{ title }} by {{ author }}</h1>
+	<form action="/extensions/{{ slug }}/versions/{{ version }}" method="post" data-i7releases="on">
+		<div class="form-group">
+			<label>Compatible Inform 7 releases</label>
+			<p>Which releases of Inform 7 is <b>Version {{ version }}</b> compatible with?</p>
+			<div class="btn-group" data-toggle="buttons">
+				{% for i7releases in i7releases %}
+					{% set current = thisi7releases.indexOf( i7releases ) >= 0 %}
+					<label class="btn btn-info {% if current %}active{% endif %}">
+						<input type="checkbox" autocomplete="off" name="i7releases" value="{{ i7releases }}" {% if current %}checked{% endif %}>{{ i7releases }}
+					</label>
+				{% endfor %}
+			</div>
+		</div>
+		<div class="form-group">
+			{% set warn = thisi7releases.length == 0 %}
+			<div class="releases-warning alert alert-warning" role="alert" {% if !warn %}style="display: none;"{% endif %}>
+				<b>Warning:</b> No Inform 7 releases selected! Users will not be able to download this version of the extension from within Inform 7.
+			</div>
+			<button type="submit" class="btn {% if warn %}btn-warning{% else %}btn-default{% endif %}">Save</button>
+			<a class="btn btn-default" href="{{ returnPath }}">Cancel</a>
+		</div>
+	</form>
+</div>
+{% endblock %}
