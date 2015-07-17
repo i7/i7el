@@ -25,7 +25,7 @@ if ( process.env.NODE_ENV && process.env.NODE_ENV == 'development' )
 	swig.setDefaults({ cache: false });
 }
 
-app.use( '/static', express.static( 'static', {} ) );
+app.use( '/static', express.static( './web/static', {} ) );
 
 authentication.setup( app );
 

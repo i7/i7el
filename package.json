@@ -15,6 +15,7 @@
     "passport-google-openidconnect": "0.0.4",
     "pg": "^4.2.0",
     "pg-hstore": "^2.3.2",
+    "search-text-tokenizer": "^1.0.0",
     "sequelize": "^3.1.1",
     "session-file-store": "0.0.14",
     "speakingurl": "^5.0.0",

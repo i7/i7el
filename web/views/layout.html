@@ -1,4 +1,4 @@
-<!doctype html>
+{% import 'macros.html' as macros %}<!doctype html>
 <html>
 <head>
 	<meta charset="utf-8">
@@ -18,6 +18,14 @@
 			<div class="navbar-header">
 				<a class="navbar-brand" href="/">Inform 7 Extensions Library</a>
 			</div>
+			<form class="navbar-form navbar-left" role="search" action="/extensions/" method="get">
+				<div class="input-group">
+					<input type="text" class="form-control" name="search" placeholder="Search">
+					<span class="input-group-btn">
+						<button class="btn btn-default">{{ macros.glyphicon( 'search', 'Search' ) }}</button>
+					</span>
+				</div>
+			</form>
 			<p class="navbar-text navbar-right">
 			{% if user %}
 				Welcome {{ user.email }} <a href="/logout" class="navbar-link">(Log out)</a>

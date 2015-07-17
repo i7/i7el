@@ -1,0 +1,15 @@
+{% extends 'layout.html' %}
+{% import 'macros.html' as macros %}
+
+{% block title %}Results for "{{ query }}" - {% endblock %}
+
+{% block content %}
+<h1>Search results for "{{query}}"</h1>
+{% if results.length == 0 %}
+	<p>No extensions found</p>
+{% else %}
+	{% for ext in results %}
+		{{ macros.extension( ext ) }}
+	{% endfor %}
+{% endif %}
+{% endblock %}

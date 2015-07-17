@@ -4,18 +4,8 @@ var db = require( '../db' );
 
 function addroutes( app, router )
 {
-
-	// Index
-	router.get( '/', function( req, res )
-	{
-		db.Extension.findAndCountAll({
-			order: [[ 'updatedAt', 'DESC' ]],
-			limit: 10
-		}).then( function( result ) {
-			res.render( 'index', { extensions: result } );
-		});
-	});
-
+	// Index and search
+	require( './controllers/search.js' )( router );
 	require( './controllers/admin.js' )( router );
 	require( './controllers/extensions.js' )( router );
 	
@@ -28,7 +18,6 @@ function addroutes( app, router )
 			stack: err.stack,
 		});
 	});
-
 }
 
 // Add RESTful routes for a resource controller

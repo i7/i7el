@@ -5,7 +5,6 @@ var contentDisposition = require( 'content-disposition' );
 var urlencodedParser = require( 'body-parser' ).urlencoded({ extended: false });
 var multer  = require( 'multer' );
 
-var authentication = require( '../authentication.js' );
 var db = require( '../../db' );
 var routes = require( '../routes.js' );
 var util = require( '../util.js' );
@@ -83,11 +82,7 @@ router.param( 'date', function( req, res, next, date )
 
 routes.routemulti( router, 'extensions', [
 
-[ 'get', '', [ function index( req, res )
-	{
-		
-	} 
-] ],
+// The root /extensions page is found in search.js
 
 // Create or update an extension
 [ 'get', 'new', [ requireCreatePermissions, function newext( req, res )

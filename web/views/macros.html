@@ -1,0 +1,21 @@
+{% macro glyphicon( name, sronly ) %}
+	<span class="glyphicon glyphicon-{{ name }}" aria-hidden="true"></span>{% if sronly %}<span class="sr-only">{{ sronly }}</span>{% endif %}
+{% endmacro %}
+
+{% macro alert( alertobj, classes ) %}
+	{% if alertobj %}
+		<div class="alert alert-{{ alertobj.type|lower }}{% if classes %} {{ classes }}{% endif %}" role="alert">
+			<p><strong>{{ alertobj.type|title }}:</strong> {{ alertobj.msg }}
+		</div>
+	{% endif %}
+{% endmacro %}
+
+{% macro extension( ext ) %}
+	<div>
+		<h3><a href="/extensions/{{ ext.slug }}">{{ ext.title }}</a> by {{ ext.author }}</h3>
+		<p>Current version: {{ ext.currentVersion }}</p>
+		{% if ext.description %}
+			<p>{{ ext.description }}</p>
+		{% endif %}
+	</div>
+{% endmacro %}

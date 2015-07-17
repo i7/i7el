@@ -1,11 +1,9 @@
 {% extends 'layout.html' %}
+{% import 'macros.html' as macros %}
 
 {% block content %}
 <div class="col-md-12">
 	<h1>The Inform 7 Extensions Library</h1>
-</div>
-<div class="col-md-8">
-	<h2>Recently updated extensions</h2>
 </div>
 <div class="col-md-4">
 	<h2>Library statistics</h2>
@@ -24,5 +22,11 @@
 			<li><a href="/login">Log in</a></li>
 		{% endif %}
 	</ul>
+</div>
+<div class="col-md-8">
+	<h2>Recently updated extensions</h2>
+	{% for ext in extensions.rows %}
+		{{ macros.extension( ext ) }}
+	{% endfor %}
 </div>
 {% endblock %}
