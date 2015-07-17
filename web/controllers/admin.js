@@ -38,7 +38,7 @@ routes.routemulti( router, 'admin', [
 	{
 		function normifyresults( data )
 		{
-			return _( data || '' ).split( '\r\n' ).map( _.trim ).filter().sort();
+			return _( data || '' ).split( '\r\n' ).map( _.trim ).filter().sort().value();
 		}
 	
 		var settings = req.app.locals.settings;

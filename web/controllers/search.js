@@ -37,8 +37,7 @@ routes.routemulti( router, null, [
 		
 		data.query = terms;
 		
-		tokens = tokenizer( terms );
-		tokens = _( tokens ).map( function( term )
+		tokens = _.map( tokenizer( terms ), function( term )
 		{
 			return { $or: [
 				{ title: { $iLike: '%' + term + '%' } },
@@ -50,6 +49,7 @@ routes.routemulti( router, null, [
 		
 		db.Extension.findAll({
 			where: { $and: tokens },
+			logging: console.log
 		})
 			.then( function( results )
 			{
