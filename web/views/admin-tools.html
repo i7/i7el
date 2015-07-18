@@ -1,0 +1,11 @@
+{% extends 'admin.html' %}
+
+{% block title %}
+Admin Tools - 
+{% endblock %}
+
+{% block admincontent %}
+<h1>Admin Tools</h1>
+{{ macros.alert( alert ) }}
+<p><a class="btn btn-lg btn-primary" href="/admin/tools?method=update">Update all extensions</a>
+{% endblock %}

@@ -1,0 +1,29 @@
+{% extends 'admin.html' %}
+
+{% block title %}
+Admin Settings - 
+{% endblock %}
+
+{% block admincontent %}
+<h1>Admin Settings</h1>
+{%- if saved -%}
+	<div class="alert alert-success" role="alert">Settings saved!</div>
+{%- endif -%}
+<form action="/admin" method="post">
+	<div class="form-group">
+		<label for="admins">Administrators</label> (one email per line)
+		<textarea class="form-control" rows="8" name="admins" id="admins">{{ admins }}</textarea>
+	</div>
+	<div class="form-group">
+		<label for="editors">Editors</label> (one email per line)
+		<textarea class="form-control" rows="8" name="editors" id="editors">{{ editors }}</textarea>
+	</div>
+	<div class="form-group">
+		<label for="releases">Inform 7 releases</label> (one per line)
+		<textarea class="form-control" rows="8" name="releases" id="releases">{{ releases }}</textarea>
+	</div>
+	<div class="form-group">
+		<button type="submit" class="btn btn-default">Save</button>
+	</div>
+</form>
+{% endblock %}

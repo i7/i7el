@@ -4,15 +4,14 @@ function add_hooks( db )
 {
 	
 	// After updating a Version, update the corresponding Extension so that it has the correct CurrentVersion
-	var update_CurrentVersion_sort = db.Version.order( true );
 	function update_CurrentVersion( instance, options, callback )
 	{
 		db.Version.findOne({
 			where: {
 				ExtensionId: instance.ExtensionId,
 			},
-			// Order by i7 versions then version number
-			order: update_CurrentVersion_sort,
+			// Order by i7 releases then version number
+			order: db.Version.orderByReleaseAndVersion,
 			transaction: options.transaction,
 		})
 			.then( function( current_version )

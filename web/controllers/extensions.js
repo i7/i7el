@@ -278,7 +278,7 @@ routes.routemulti( router, 'extensions', [
 [ 'get', ':slug/versions/:major/:date/edit', [ requireEditThisPermissions, function editi7releases( req, res )
 	{
 		var data = {
-			thisi7releases: req.version.i7releases ? req.version.i7releases.split( ' ' ) : [],
+			thisi7releases: req.version.releasesToArray(),
 			returnPath: req.session.returnFromVersionEdit || '/extensions/' + req.params.slug,
 		};
 		res.render( 'versions-edit', data );
@@ -288,21 +288,7 @@ routes.routemulti( router, 'extensions', [
 // Edit the i7releases of a version
 [ 'post', ':slug/versions/:major/:date', [ requireEditThisPermissions, urlencodedParser, function savei7releases( req, res )
 	{
-		// Handle some potentially bad input
-		var releases = req.body.i7releases;
-		if ( releases )
-		{
-			if ( !_.isArray( releases ) )
-			{
-				releases = [ releases ];
-			}
-			releases = _( releases ).map( _.trim ).filter().sort().reverse().join( ' ' );
-		}
-		if ( !releases )
-		{
-			releases = null;
-		}
-		req.version.i7releases = releases;
+		req.version.i7releases = req.body.i7releases;
 		req.version.save()
 			.then( function()
 			{

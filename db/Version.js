@@ -1,37 +1,57 @@
+var _ = require( 'lodash' );
+
 module.exports = function( sequelize, DataTypes )
 {
-	// Create an array of order parameters
-	function make_order( sort_i7 )
-	{
-		var ret = [];
-		if ( sort_i7 )
-		{
-			// Sort by i7releases with nulls last
-			ret.push( sequelize.literal( "NULLIF( substr( i7releases, 0, 4 ), '' ) DESC NULLS LAST" ) );
-		}
-		ret.push( sequelize.literal( "replace( version, '/', '.' )::decimal DESC" ) );
-		return ret;
-	}
+	var orderByI7Release = [ sequelize.fn( 'substr', sequelize.col( 'i7releases' ), 0, 4 ), 'DESC NULLS LAST' ];
+	var orderByVersion = [ sequelize.cast( sequelize.fn( 'replace', sequelize.col( 'version' ), '/', '.' ), 'decimal' ), 'DESC' ];
 
 	return sequelize.define( "Version", {
 		version: DataTypes.TEXT,
 		code: DataTypes.TEXT,
-		// A space separated list of I7 releases
-		i7releases: DataTypes.TEXT,
+		// A comma and space separated list of I7 releases
+		i7releases: {
+			type: DataTypes.TEXT,
+			// Normalise input, takes an array of strings
+			set: function( releases )
+			{
+				if ( releases )
+				{
+					releases = _.isArray( releases ) ? releases : [ releases ];
+					releases = _( releases ).map( _.trim ).filter().sort().reverse().join( ', ' );
+				}
+				releases = releases || null;
+				this.setDataValue( 'i7releases', releases );
+			},
+		},
 		// Email address of uploader
 		uploader: DataTypes.TEXT,
 	}, {
 		defaultScope: {
 			// By default sort by only the version number, not i7releases
-			order: make_order(),
+			order: [ orderByVersion ],
 		},
 		classMethods: {
-			order: make_order,
+			orderByReleaseAndVersion: [ orderByI7Release, orderByVersion ],
 		},
 		instanceMethods: {
+			updateSchema: function()
+			{
+				// Switch to comma and space separated i7releases
+				var releases = this.getDataValue( 'i7releases' );
+				if ( releases && / /.test( releases ) && !/,/.test( releases ) )
+				{
+					this.setDataValue( 'i7releases', releases.replace( / /g, ', ' ) );
+					return true;
+				}
+			},
 			stable: function()
 			{
 				return new Date() - new Date( this.createdAt ) > 86400000;
+			},
+			releasesToArray: function()
+			{
+				var releases = this.getDataValue( 'i7releases' );
+				return releases ? releases.split( ', ' ) : [];
 			},
 		},
 	});

@@ -16,6 +16,7 @@ function preparevars( req )
 		admins: settings.admins.join( '\n' ),
 		editors: settings.editors.join( '\n' ),
 		releases: settings.releases.join( '\n' ),
+		current: 'settings',
 	};
 }
 
@@ -29,9 +30,9 @@ routes.routemulti( router, 'admin', [
 		util.updatesettings()
 			.then( function()
 			{
-				res.render( 'admin', preparevars( req ) );
+				res.render( 'admin-settings', preparevars( req ) );
 			});
-	} 
+	}
 ] ],
 	
 [ 'post', '', [ requireadmin, urlencodedParser, function update( req, res )
@@ -55,8 +56,43 @@ routes.routemulti( router, 'admin', [
 			{
 				var templatevars = preparevars( req );
 				templatevars.saved = 1;
-				res.render( 'admin', templatevars );
+				res.render( 'admin-settings', templatevars );
 			});
+	}
+] ],
+
+[ 'get', 'tools', [ requireadmin, function tools( req, res )
+	{
+		if ( req.query.method == 'update' )
+		{
+			db.Version.findAll()
+				.then( function( results )
+				{
+					_.forEach( results, function( version )
+					{
+						var changed = version.updateSchema();
+						if ( changed )
+						{
+							version.save();
+						}
+					});
+				});
+			req.session.alert = {
+				type: 'Success',
+				msg: 'Extensions are in the process of being updated now',
+			};
+			res.redirect ( '/admin/tools' );
+		}
+		else
+		{
+			var data = { current: 'tools' };
+			if ( req.session.alert )
+			{
+				data.alert = req.session.alert;
+				delete req.session.alert;
+			}
+			res.render( 'admin-tools', data );
+		}
 	}
 ] ],
 

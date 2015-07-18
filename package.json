@@ -16,7 +16,7 @@
     "pg": "^4.2.0",
     "pg-hstore": "^2.3.2",
     "search-text-tokenizer": "^1.0.0",
-    "sequelize": "^3.1.1",
+    "sequelize": "^3.4.1",
     "session-file-store": "0.0.14",
     "speakingurl": "^5.0.0",
     "swig": "^1.4.2"
