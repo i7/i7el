@@ -16,7 +16,7 @@
 {% macro extension( ext ) %}
 	<div>
 		<h3><a href="/extensions/{{ ext.slug }}">{{ ext.title }}</a> by {{ ext.author }}</h3>
-		<p>Current version: {{ ext.currentVersion }}</p>
+		<p>Version {{ ext.current.version }}{% if ext.current.i7releases %} for Inform 7 {{ ext.current.i7releases }}{% endif %}</p>
 		{% if ext.description %}
 			<p>{{ ext.description }}</p>
 		{% endif %}

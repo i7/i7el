@@ -77,6 +77,22 @@ routes.routemulti( router, 'admin', [
 						}
 					});
 				});
+			db.Extension.findAll()
+				.then( function( results )
+				{
+					_.forEach( results, function( ext )
+					{
+						var changed = ext.updateSchema();
+						ext.updateCurrentVersion( function ( result )
+						{
+							changed |= result;
+							if ( changed )
+							{
+								ext.save();
+							}
+						});
+					});
+				});
 			req.session.alert = {
 				type: 'Success',
 				msg: 'Extensions are in the process of being updated now',

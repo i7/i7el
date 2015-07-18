@@ -22,7 +22,7 @@
 	</thead>
 	<tbody>
 		{% for version in versions %}
-			<tr{% if version.version == currentVersion %} class="info"{% endif %}>
+			<tr{% if version.version == current.version %} class="info"{% endif %}>
 				<td>{{ version.version }}</td>
 				<td><a class="btn btn-default" href="/extensions/{{ slug }}/versions/{{ version.version }}" role="button">{{ macros.glyphicon( 'save' ) }} Download</a></td>
 				<td>{% if user && user.can.editthis %}<a href="/extensions/{{ slug }}/versions/{{ version.version }}/edit" title="Edit releases" aria-label="Edit releases">{{ macros.glyphicon( 'pencil' ) }}</a> {% endif %}{{ version.i7releases }}</td>

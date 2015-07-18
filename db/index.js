@@ -24,18 +24,12 @@ var sequelize = new Sequelize( match[5], match[1], match[2], {
 });
 
 var Setting = sequelize.import( __dirname + '/Setting.js' );
-var Extension = sequelize.import( __dirname + '/Extension.js' );
 var Version = sequelize.import( __dirname + '/Version.js' );
+var Extension = sequelize.import( __dirname + '/Extension.js' );
 
 // Set up the relations
 Version.belongsTo( Extension );
 Extension.hasMany( Version );
-Extension.belongsTo( Version, {
-	as: 'CurrentVersion',
-	foreignKey: 'currentVersion',
-	targetKey: 'version',
-	constraints: false,
-});
 
 var db = {
 	Sequelize: Sequelize,

@@ -54,3 +54,9 @@ body
 {
 	white-space: normal;
 }
+
+.btn-download small
+{
+	display: block;
+	font-size: 0.8em;
+}

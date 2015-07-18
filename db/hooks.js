@@ -1,38 +1,25 @@
-var _ = require( 'lodash' );
-
 function add_hooks( db )
 {
 	
 	// After updating a Version, update the corresponding Extension so that it has the correct CurrentVersion
 	function update_CurrentVersion( instance, options, callback )
 	{
-		db.Version.findOne({
-			where: {
-				ExtensionId: instance.ExtensionId,
-			},
-			// Order by i7 releases then version number
-			order: db.Version.orderByReleaseAndVersion,
-			transaction: options.transaction,
-		})
-			.then( function( current_version )
+		var transaction = options.transaction;
+		instance.getExtension()
+			.then( function( ext )
 			{
-				var data = { currentVersion: current_version.version };
-				
-				// Extract documenation
-				var docs = current_version.code.match( /-{3,} +DOCUMENTATION +-{3,}([\s\S]+$)/i );
-				if ( docs )
+				ext.updateCurrentVersion( function( result )
 				{
-					data.documentation = _.trim( docs[1] );
-				}
-		
-				return db.Extension.update( data, {
-					where: { id: instance.ExtensionId },
-					transaction: options.transaction,
-				});
-			})
-			.then( function()
-			{
-				callback();
+					if ( result )
+					{
+						ext.save({ transaction: transaction })
+							.then( function() { callback(); } );
+					}
+					else
+					{
+						callback();
+					}
+				}, transaction );
 			});
 	}
 	

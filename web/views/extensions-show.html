@@ -12,7 +12,7 @@
 		{
 			i7el.choose_i7versions({
 				slug: '{{ slug }}',
-				version: '{{ currentVersion }}',
+				version: '{{ current.version }}',
 				alert: {{ alert|json|safe }},
 				i7versions: [],
 			});
@@ -29,7 +29,7 @@
 {{ macros.alert( alert, 'col-md-12' ) }}
 <div class="col-md-4">
 	<h2>Versions</h2>
-	<p><a class="btn btn-lg btn-primary btn-block text-wrap" href="/extensions/{{ slug }}/versions/{{ currentVersion }}">{{ macros.glyphicon( 'save' ) }} Download version {{ currentVersion }}</a>
+	<p><a class="btn btn-lg btn-primary btn-block text-wrap btn-download" href="/extensions/{{ slug }}/versions/{{ current.version }}">{{ macros.glyphicon( 'save' ) }} Download version {{ current.version }}{% if current.i7releases %}<small>For Inform 7 {{ current.i7releases }}</small>{% endif %}</a>
 	<p><a href="/extensions/{{ slug }}/versions">View all versions</a>
 	{% if user && user.can.editthis %}
 		<h2>Actions</h2>
