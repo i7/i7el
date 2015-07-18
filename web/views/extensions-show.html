@@ -24,12 +24,12 @@
 
 {% block content %}
 <div class="col-md-12">
-	<h1>{{ title }} by {{ author }}</h1>
+	<h1>{{ title }} by {{ author }} <small><a href="/extensions?search={{ author }}" title="Search for other extensions by this author">{{ macros.glyphicon( 'user', 'Search for other extensions by this author' ) }}</a></small></h1>
 </div>
 {{ macros.alert( alert, 'col-md-12' ) }}
 <div class="col-md-4">
 	<h2>Versions</h2>
-	<p><a class="btn btn-lg btn-primary btn-block" href="/extensions/{{ slug }}/versions/{{ currentVersion }}">{{ macros.glyphicon( 'save' ) }} Download current version {{ currentVersion }}</a>
+	<p><a class="btn btn-lg btn-primary btn-block text-wrap" href="/extensions/{{ slug }}/versions/{{ currentVersion }}">{{ macros.glyphicon( 'save' ) }} Download version {{ currentVersion }}</a>
 	<p><a href="/extensions/{{ slug }}/versions">View all versions</a>
 	{% if user && user.can.editthis %}
 		<h2>Actions</h2>

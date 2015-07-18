@@ -57,12 +57,15 @@ function setup( app )
 	}, returnFromGoogle );
 	
 	// Give the templates the user info
-	// Use regex to exclude favicon - probably not best option
-	app.use( /(?!\.\w+$)/, function( req, res, next )
+	app.use( function( req, res, next )
 	{
-		res.locals.user = req.user;
-		// Store the current page for when the user logs in or out
-		req.session.returnTo = req.path;
+		// Skip the favicon
+		if ( !/\.\w+$/.test( req.path ) )
+		{
+			res.locals.user = req.user;
+			// Store the current page for when the user logs in or out
+			req.session.returnTo = _.trim( req.originalUrl, '#' );
+		}
 		next();
 	});
 

@@ -11,7 +11,46 @@ https://github.com/i7/i7el
 
 */
 
+html
+{
+	min-height: 100%;
+	position: relative;
+}
+
+body
+{
+	margin-bottom: 2em;
+}
+
+.navbar.navbar-inverse
+{
+	border: 0;
+	border-radius: 0;
+}
+
+.footer
+{
+	background-color: #f0f0f0;
+	bottom: 0;
+	height: 2em;
+	line-height: 2em;
+	position: absolute;
+	text-align: center;
+	width: 100%;
+}
+
+.footer p
+{
+	font-size: 0.9em;
+	margin: 0;
+}
+
 .table tbody > tr > td
 {
 	vertical-align: middle;
+}
+
+.text-wrap
+{
+	white-space: normal;
 }

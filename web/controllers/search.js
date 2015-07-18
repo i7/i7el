@@ -49,7 +49,6 @@ routes.routemulti( router, null, [
 		
 		db.Extension.findAll({
 			where: { $and: tokens },
-			logging: console.log
 		})
 			.then( function( results )
 			{
