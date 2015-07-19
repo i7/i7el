@@ -60,3 +60,26 @@ body
 	display: block;
 	font-size: 0.8em;
 }
+
+.media-ext
+{
+	padding-top: 3px;
+	position: relative;
+}
+
+.media-ext .fa
+{
+	display: block;
+	font-size: 42px;
+}
+
+.media-ext .i7r
+{
+	display: block;
+	font: bold 12px/1 monospace;
+	left: 0;
+	position: absolute;
+	text-align: center;
+	top: 18px;
+	width: 36px;
+}

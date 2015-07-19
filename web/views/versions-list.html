@@ -7,7 +7,7 @@
 <h1>{{ title }} by {{ author }}</h1>
 {{ macros.alert( alert ) }}
 {# Try breadcrumps instead - would be useful for search results #}
-<p><a href="/extensions/{{ slug }}">{{ macros.glyphicon( 'arrow-left' ) }} Back to this extension</a>
+<p><a href="/extensions/{{ slug }}">{{ macros.icon( 'arrow-left' ) }} Back to this extension</a>
 <table class="table">
 	<thead>
 		<tr>
@@ -24,8 +24,8 @@
 		{% for version in versions %}
 			<tr{% if version.version == current.version %} class="info"{% endif %}>
 				<td>{{ version.version }}</td>
-				<td><a class="btn btn-default" href="/extensions/{{ slug }}/versions/{{ version.version }}" role="button">{{ macros.glyphicon( 'save' ) }} Download</a></td>
-				<td>{% if user && user.can.editthis %}<a href="/extensions/{{ slug }}/versions/{{ version.version }}/edit" title="Edit releases" aria-label="Edit releases">{{ macros.glyphicon( 'pencil' ) }}</a> {% endif %}{{ version.i7releases }}</td>
+				<td><a class="btn btn-default" href="/extensions/{{ slug }}/versions/{{ version.version }}" role="button">{{ macros.icon( 'download' ) }} Download</a></td>
+				<td>{% if user && user.can.editthis %}<a href="/extensions/{{ slug }}/versions/{{ version.version }}/edit" title="Edit releases" aria-label="Edit releases">{{ macros.icon( 'pencil' ) }}</a> {% endif %}{{ version.i7releases }}</td>
 				<td>{{ version.createdAt|date('F j, Y') }}</td>
 				{% if user && user.can.editthis %}
 					<td><a href="mailto:{{ version.uploader }}">{{ version.uploader }}</a></td>

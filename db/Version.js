@@ -34,16 +34,6 @@ module.exports = function( sequelize, DataTypes )
 			orderByReleaseAndVersion: [ orderByI7Release, orderByVersion ],
 		},
 		instanceMethods: {
-			updateSchema: function()
-			{
-				// Switch to comma and space separated i7releases
-				var releases = this.getDataValue( 'i7releases' );
-				if ( releases && / /.test( releases ) && !/,/.test( releases ) )
-				{
-					this.setDataValue( 'i7releases', releases.replace( / /g, ', ' ) );
-					return true;
-				}
-			},
 			stable: function()
 			{
 				return new Date() - new Date( this.createdAt ) > 86400000;

@@ -65,18 +65,6 @@ routes.routemulti( router, 'admin', [
 	{
 		if ( req.query.method == 'update' )
 		{
-			db.Version.findAll()
-				.then( function( results )
-				{
-					_.forEach( results, function( version )
-					{
-						var changed = version.updateSchema();
-						if ( changed )
-						{
-							version.save();
-						}
-					});
-				});
 			db.Extension.findAll()
 				.then( function( results )
 				{

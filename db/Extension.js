@@ -12,6 +12,7 @@ module.exports = function( sequelize, DataTypes )
 		title: DataTypes.TEXT,
 		author: DataTypes.TEXT,
 		// A stored copy of some relevant properties of the current version (but not the code itself)
+		// Properties: version, i7releases, updatedAt
 		current: DataTypes.JSON,
 		// Maintainer email address
 		maintainer: DataTypes.TEXT,
@@ -22,6 +23,7 @@ module.exports = function( sequelize, DataTypes )
 		documentation: DataTypes.TEXT,
 		// categories/tags
 	}, {
+		defaultScope: {},
 		instanceMethods: {
 			updateSchema: function() {},
 			// Update the current version, and run some other update functions if it's changed
