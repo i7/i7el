@@ -1,44 +1,45 @@
 // Connect to and initiate the database
 
 var Sequelize = require( 'sequelize' );
-
 var hooks = require( './hooks.js' );
 
-// Connect to the database
-if ( !process.env.DATABASE_URL )
-{
-	throw new Error( 'DATABASE_URL environment variable not set!' );
-}
+var env = process.env.NODE_ENV || 'development';
+var db = module.exports = {};
 
-var match = process.env.DATABASE_URL.match( /postgres:\/\/([^:]+):([^@]+)@([^:]+):(\d+)\/(.+)/ );
-
-var sequelize = new Sequelize( match[5], match[1], match[2], {
-	dialect: 'postgres',
-	protocol: 'postgres',
+var options = {
 	dialectOptions: {
 		ssl: true,
 	},
-	host: match[3],
-	port: match[4],
 	logging: false,
-});
+};
 
-var Setting = sequelize.import( __dirname + '/Setting.js' );
-var Version = sequelize.import( __dirname + '/Version.js' );
-var Extension = sequelize.import( __dirname + '/Extension.js' );
+// Connect to the database
+console.log( 'i7el: Connecting to database' );
+try
+{
+	var config = require( __dirname + '/config.json' )[env];
+	var sequelize = new Sequelize( config.url, options );
+}
+catch ( err )
+{
+	if ( !process.env.DATABASE_URL )
+	{
+		throw new Error( 'DATABASE_URL environment variable not set!' );
+	}
+	var sequelize = new Sequelize( process.env.DATABASE_URL, options );
+}
+
+db.sequelize = sequelize;
+db.Sequelize = Sequelize;
+
+// Load our models
+var Setting = db.Setting = sequelize.import( __dirname + '/Setting.js' );
+var Version = db.Version = sequelize.import( __dirname + '/Version.js' );
+var Extension = db.Extension = sequelize.import( __dirname + '/Extension.js' );
 
 // Set up the relations
 Version.belongsTo( Extension );
 Extension.hasMany( Version );
 
-var db = {
-	Sequelize: Sequelize,
-	sequelize: sequelize,
-	Setting: Setting,
-	Extension: Extension,
-	Version: Version,
-};
-
+// Load the hooks
 hooks( db );
-
-module.exports = db;

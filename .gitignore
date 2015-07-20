@@ -2,3 +2,4 @@
 .sessions
 node_modules
 npm-debug.log
+db/config.json

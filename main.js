@@ -15,7 +15,7 @@ var web = require( './web' );
 
 var app = web.app;
 
-console.log( 'i7el: Connecting to database' );
+console.log( 'i7el: Syncing database' );
 db.sequelize.sync()
 	.then( web.util.updatesettings )
 	.then( function()
