@@ -10,7 +10,7 @@ function add_hooks( db )
 			{
 				ext.updateCurrentVersion( function( result )
 				{
-					if ( result )
+					if ( result[0] )
 					{
 						ext.save({ transaction: transaction })
 							.then( function() { callback(); } );

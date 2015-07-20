@@ -25,7 +25,6 @@ module.exports = function( sequelize, DataTypes )
 	}, {
 		defaultScope: {},
 		instanceMethods: {
-			updateSchema: function() {},
 			// Update the current version, and run some other update functions if it's changed
 			updateCurrentVersion: function( callback, transaction )
 			{
@@ -53,12 +52,26 @@ module.exports = function( sequelize, DataTypes )
 							self.updateDescription( current );
 							self.updateDocumentation( current );
 						}
-						callback( changed );
+						callback( [ changed, current ] );
 					});
 			},
 			// Extract description from the extension rubric
 			updateDescription: function( current )
 			{
+				if ( !this.description )
+				{
+					var lines = current.code.split( /\r?\n/g ).slice( 2 );
+					var description = '';
+					if ( /^\s*"/.test( lines[0] ) )
+					{
+						// Handle multi-line rubrics
+						while ( !/"\s*$/.test( description ) )
+						{
+							description += lines.shift() + ' ';
+						}
+						this.description = _.trim( description, ' "' );
+					}
+				}
 			},
 			// Extract documenation
 			updateDocumentation: function( current )

@@ -70,14 +70,11 @@ routes.routemulti( router, 'admin', [
 				{
 					_.forEach( results, function( ext )
 					{
-						var changed = ext.updateSchema();
 						ext.updateCurrentVersion( function ( result )
 						{
-							changed |= result;
-							if ( changed )
-							{
-								ext.save();
-							}
+							ext.updateDescription( result[1] );
+							ext.updateDocumentation( result[1] );
+							ext.save();
 						});
 					});
 				});

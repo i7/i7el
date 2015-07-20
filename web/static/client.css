@@ -45,6 +45,11 @@ body
 	margin: 0;
 }
 
+h1 small
+{
+	font-size: 85%;
+}
+
 .table tbody > tr > td
 {
 	vertical-align: middle;
@@ -76,10 +81,10 @@ body
 .media-ext .i7r
 {
 	display: block;
-	font: bold 12px/1 monospace;
+	font: bold 12px/11px "Arial Black", sans-serif;
 	left: 0;
 	position: absolute;
 	text-align: center;
-	top: 18px;
+	top: 19px;
 	width: 36px;
 }
