@@ -29,6 +29,16 @@ app.use( '/static', express.static( './web/static', {} ) );
 
 authentication.setup( app );
 
+// Set session for the Public Library
+app.use( function( req, res, next )
+{
+	if ( typeof req.query.pl != 'undefined' )
+	{
+		req.session.pl = req.query.pl;
+	}
+	next();
+});
+
 app.use( router );
 
 routes.addroutes( app, router );

@@ -24,7 +24,18 @@
 
 {% block content %}
 <div class="col-md-12">
-	<h1>{{ title }} by {{ author }} <small><a href="/extensions?search={{ author }}" title="Search for other extensions by this author">{{ macros.icon( 'user', 'Search for other extensions by this author' ) }}</a></small></h1>
+	<h1>{{ title }} by {{ author }} <small>
+		<a href="/extensions?search={{ author }}" title="Search for other extensions by this author">{{ macros.icon( 'user', 'Search for other extensions by this author' ) }}</a>
+		{% if user && user.can.editany -%}
+			{%- if approved -%}
+				<a href="/extensions/{{ slug }}/edit/?approved=0" title="Approved for the Public Library; click to reject">{{ macros.icon( 'check-circle text-success', 'Approved for the Public Library; click to reject' ) }}</a>
+			{%- else -%}
+				<a href="/extensions/{{ slug }}/edit/?approved=1" title="Not approved for the Public Library; click to approve">{{ macros.icon( 'check-circle text-muted', 'Not approved for the Public Library; click to approve' ) }}</a>
+			{%- endif -%}
+		{%- elif approved -%}
+			{{ macros.icon( 'check-circle text-success', 'Approved for the Public Library', 'Approved for the Public Library' ) }}
+		{%- endif -%}
+	</small></h1>
 </div>
 {{ macros.alert( alert, 'col-md-12' ) }}
 <div class="col-md-4">

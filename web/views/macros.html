@@ -1,8 +1,6 @@
-{% macro icon( name, sronly ) -%}
-	<span class="fa fa-{{ name }}" aria-hidden="true"></span>
-	{%- if sronly -%}
-		<span class="sr-only">{{ sronly }}</span>
-	{%- endif -%}
+{% macro icon( name, sronly, title ) -%}
+	<span class="fa fa-{{ name }}" aria-hidden="true"{% if title %} title="{{ title }}"{% endif %}></span>
+	{%- if sronly %}<span class="sr-only">{{ sronly }}</span>{% endif -%}
 {%- endmacro %}
 
 {% macro alert( alertobj, classes ) %}

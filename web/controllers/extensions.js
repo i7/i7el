@@ -207,7 +207,7 @@ routes.routemulti( router, 'extensions', [
 								msg: extcreated ? 'Extension uploaded' : 'Extension version uploaded',
 							};
 							//req.session.showdialog = 1;
-							res.redirect ( '/extensions/' + slug );
+							res.redirect( '/extensions/' + slug );
 						}
 					});
 			});
@@ -219,6 +219,7 @@ routes.routemulti( router, 'extensions', [
 	{
 		var ext = req.extension;
 		var data = {
+			approved: ext.approved,
 			description: ext.description || '',
 			documentation: ext.documentation || '',
 		};
@@ -237,6 +238,34 @@ routes.routemulti( router, 'extensions', [
 			delete req.session.showdialog;
 		}*/
 		res.render( 'extensions-show', data );
+	}
+] ],
+
+// Edit extension
+[ 'get', ':slug/edit', [ requireEditThisPermissions, function edit( req, res )
+	{
+		var ext = req.extension;
+		var userCanEditAny = req.user.can.editany;
+		
+		function auth_error()
+		{
+			return res.status( 403 ).render( 'error', { type: 'authentication' } );
+		}
+		
+		// Edit the public library approval setting
+		if ( typeof req.query.approved != 'undefined' )
+		{
+			if ( !userCanEditAny )
+			{
+				return auth_error();
+			}
+			req.extension.approved = req.query.approved;
+			req.extension.save()
+				.then( function()
+				{
+					res.redirect( '/extensions/' + ext.slug );
+				});
+		}
 	}
 ] ],
 

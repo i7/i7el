@@ -7,6 +7,18 @@ var db = require( '../../db' );
 var routes = require( '../routes.js' );
 var util = require( '../util.js' );
 
+function merge_pl( req, query )
+{
+	if ( req.session.pl )
+	{
+		_.merge( query, {
+			where: {
+				approved: true,
+			}
+		});
+	}
+}
+
 module.exports = function( router )
 {
 
@@ -14,13 +26,16 @@ routes.routemulti( router, null, [
 
 [ 'get', '', [ function index( req, res )
 	{
-		db.Extension.findAndCountAll({
+		var query = {
 			order: [[ 'updatedAt', 'DESC' ]],
 			limit: 10,
-		}).then( function( results )
-		{
-			res.render( 'index', { extensions: results } );
-		});
+		};
+		merge_pl( req, query );
+		db.Extension.findAndCountAll( query )
+			.then( function( results )
+			{
+				res.render( 'index', { extensions: results } );
+			});
 	}
 ] ],
 
@@ -47,9 +62,11 @@ routes.routemulti( router, null, [
 			] };
 		});
 		
-		db.Extension.findAll({
+		var query = {
 			where: { $and: tokens },
-		})
+		};
+		merge_pl( req, query );
+		db.Extension.findAll( query )
 			.then( function( results )
 			{
 				data.results = results;
