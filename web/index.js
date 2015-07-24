@@ -34,7 +34,7 @@ app.use( function( req, res, next )
 {
 	if ( typeof req.query.pl != 'undefined' )
 	{
-		req.session.pl = req.query.pl;
+		req.session.pl = res.locals.pl = req.query.pl;
 	}
 	next();
 });

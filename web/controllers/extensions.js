@@ -49,7 +49,7 @@ router.param( 'slug', function( req, res, next, slug )
 				slug: slug,
 				title: result.title,
 				author: result.author,
-				current: result.current,
+				data: result.data,
 				i7releases: req.app.locals.settings.releases,
 			});
 			next();

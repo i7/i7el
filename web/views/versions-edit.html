@@ -10,16 +10,16 @@
 			<label>Compatible Inform 7 releases</label>
 			<p>Which releases of Inform 7 is <b>Version {{ version }}</b> compatible with?</p>
 			<div class="btn-group" data-toggle="buttons">
-				{% for i7releases in i7releases %}
-					{% set current = thisi7releases.indexOf( i7releases ) >= 0 %}
-					<label class="btn btn-info {% if current %}active{% endif %}">
-						<input type="checkbox" autocomplete="off" name="i7releases" value="{{ i7releases }}" {% if current %}checked{% endif %}>{{ i7releases }}
+				{% for i7release in i7releases %}
+					{%- set active = thisi7releases.indexOf( i7release ) >= 0 -%}
+					<label class="btn btn-info {% if active %}active{% endif %}">
+						<input type="checkbox" autocomplete="off" name="i7releases" value="{{ i7release }}" {% if active %}checked{% endif %}>{{ i7release }}
 					</label>
 				{% endfor %}
 			</div>
 		</div>
 		<div class="form-group">
-			{% set warn = thisi7releases.length == 0 %}
+			{%- set warn = thisi7releases.length == 0 %}
 			<div class="releases-warning alert alert-warning" role="alert" {% if !warn %}style="display: none;"{% endif %}>
 				<b>Warning:</b> No Inform 7 releases selected! Users will not be able to download this version of the extension from within Inform 7.
 			</div>

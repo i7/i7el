@@ -11,11 +11,16 @@ module.exports = function( sequelize, DataTypes )
 		},
 		title: DataTypes.TEXT,
 		author: DataTypes.TEXT,
-		// A stored copy of some relevant properties of the current version (but not the code itself)
-		// Properties: version, i7releases, updatedAt
-		current: DataTypes.JSON,
-		// Maintainer email address
-		maintainer: DataTypes.TEXT,
+		/*
+		// Additional data
+		{
+			// A list of maintainers
+			maintainers: [],
+			// Cached properties from the current version
+			current: { version, i7releases, createdAt, updatedAt },
+		}
+		*/
+		data: DataTypes.JSONB,
 		// Approved for the public library
 		approved: DataTypes.BOOLEAN,
 		// Description and documentation in Markdown
@@ -29,7 +34,7 @@ module.exports = function( sequelize, DataTypes )
 			updateCurrentVersion: function( callback, transaction )
 			{
 				var self = this;
-				var old_version = JSON.stringify( this.current || {} );
+				var old_version = JSON.stringify( this.data.current || {} );
 				this.getVersions({
 					// Order by i7 releases then version number
 					order: Version.orderByReleaseAndVersion,
@@ -43,12 +48,14 @@ module.exports = function( sequelize, DataTypes )
 						var new_version = {
 							version: current.version,
 							i7releases: current.i7releases,
+							createdAt: current.createdAt,
 							updatedAt: current.updatedAt,
 						};
 						var changed = JSON.stringify( new_version ) != old_version;
 						if ( changed )
 						{
-							self.current = new_version;
+							self.data.current = new_version;
+							self.changed( 'data', true );
 							self.updateDescription( current );
 							self.updateDocumentation( current );
 						}

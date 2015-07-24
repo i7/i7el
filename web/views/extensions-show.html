@@ -1,5 +1,6 @@
 {% extends 'layout.html' %}
 {% import 'macros.html' as macros %}
+{% set current = data.current %}
 
 {% block title %}{{ title }} by {{ author }} - {% endblock %}
 
@@ -28,11 +29,11 @@
 		<a href="/extensions?search={{ author }}" title="Search for other extensions by this author">{{ macros.icon( 'user', 'Search for other extensions by this author' ) }}</a>
 		{% if user && user.can.editany -%}
 			{%- if approved -%}
-				<a href="/extensions/{{ slug }}/edit/?approved=0" title="Approved for the Public Library; click to reject">{{ macros.icon( 'check-circle text-success', 'Approved for the Public Library; click to reject' ) }}</a>
+				<a class="text-success" href="/extensions/{{ slug }}/edit/?approved=0" title="Approved for the Public Library; click to reject">{{ macros.icon( 'check-circle', 'Approved for the Public Library; click to reject' ) }}</a>
 			{%- else -%}
-				<a href="/extensions/{{ slug }}/edit/?approved=1" title="Not approved for the Public Library; click to approve">{{ macros.icon( 'check-circle text-muted', 'Not approved for the Public Library; click to approve' ) }}</a>
+				<a class="text-muted" href="/extensions/{{ slug }}/edit/?approved=1" title="Not approved for the Public Library; click to approve">{{ macros.icon( 'check-circle', 'Not approved for the Public Library; click to approve' ) }}</a>
 			{%- endif -%}
-		{%- elif approved -%}
+		{%- elif approved && !pl -%}
 			{{ macros.icon( 'check-circle text-success', 'Approved for the Public Library', 'Approved for the Public Library' ) }}
 		{%- endif -%}
 	</small></h1>

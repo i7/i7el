@@ -12,7 +12,8 @@
 {% endmacro %}
 
 {% macro extension( ext ) %}
-	{%- set i7r = ext.current.i7releases -%}
+	{%- set current = ext.data.current -%}
+	{%- set i7r = current.i7releases -%}
 	<div class="media">
 		<div class="media-left media-ext" aria-hidden="true">
 			{{ macros.icon( 'file-o' ) }}
@@ -20,7 +21,7 @@
 		</div>
 		<div class="media-body">
 			<h3 class="media-heading"><a href="/extensions/{{ ext.slug }}">{{ ext.title }}</a> by {{ ext.author }}</h3>
-			<p>Version {{ ext.current.version }}{% if i7r %} for Inform 7 {{ i7r }}{% endif %}</p>
+			<p>Version {{ current.version }}{% if i7r %} for Inform 7 {{ i7r }}{% endif %}</p>
 			{%- if ext.description %}
 				<p>{{ ext.description }}</p>
 			{% endif -%}
