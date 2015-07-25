@@ -2,10 +2,34 @@
 
 {% block title %}{{ title }} by {{ author }} - {% endblock %}
 
+{% block head %}
+<script>
+// Handle events for the i7releases selector
+$( function()
+{
+	// Toggle the warning
+	var form = $( '#edit-form' ),
+	warning = form.find( '.releases-warning' ),
+	submit = form.find( 'button' ),
+	warned = form.find( 'input:checked' ).length == 0;
+	form.on( 'click change', 'input:checkbox', function()
+	{
+		var warn = form.find( 'input:checked' ).length == 0;
+		if ( warn != warned )
+		{
+			warned = warn;
+			warning.toggle();
+			submit.toggleClass( 'btn-warning btn-default' );
+		}
+	});
+});
+</script>
+{% endblock %}
+
 {% block content %}
 <div class="col-md-8 col-md-offset-2">
 	<h1>{{ title }} by {{ author }}</h1>
-	<form action="/extensions/{{ slug }}/versions/{{ version }}" method="post" data-i7releases="on">
+	<form id="edit-form" action="/extensions/{{ slug }}/versions/{{ version }}" method="post">
 		<div class="form-group">
 			<label>Compatible Inform 7 releases</label>
 			<p>Which releases of Inform 7 is <b>Version {{ version }}</b> compatible with?</p>

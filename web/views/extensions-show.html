@@ -4,25 +4,6 @@
 
 {% block title %}{{ title }} by {{ author }} - {% endblock %}
 
-{#
-{% block head %}
-<script>
-	{% if showdialog %}
-		i7el.i7versions = {{ js.i7versions|json|safe }};
-		$( function()
-		{
-			i7el.choose_i7versions({
-				slug: '{{ slug }}',
-				version: '{{ current.version }}',
-				alert: {{ alert|json|safe }},
-				i7versions: [],
-			});
-		});
-	{% endif %}
-</script>
-{% endblock %}
-#}
-
 {% block content %}
 <div class="col-md-12">
 	<h1>{{ title }} by {{ author }} <small>
@@ -39,9 +20,19 @@
 	</small></h1>
 </div>
 {{ macros.alert( alert, 'col-md-12' ) }}
+{% if !current.i7releases %}{{ macros.alert( { type: 'Warning', msg: 'No Inform 7 releases have been specified' }, 'col-md-12' ) }}{% endif %}
 <div class="col-md-4">
 	<h2>Versions</h2>
-	<p><a class="btn btn-lg btn-primary btn-block text-wrap btn-download" href="/extensions/{{ slug }}/versions/{{ current.version }}">{{ macros.icon( 'download' ) }} Download version {{ current.version }}{% if current.i7releases %}<small>For Inform 7 {{ current.i7releases }}</small>{% endif %}</a>
+	{% if pl -%}
+		{%- set findVers = data.byRelease[pl] -%}
+		{%- if findVers -%}
+			<p><a class="btn btn-lg btn-primary btn-block text-wrap btn-download" href="/extensions/{{ slug }}/versions/{{ findVers }}">{{ macros.icon( 'download' ) }} Install version {{ findVers }}</a>
+		{%- else -%}
+			<p><a class="btn btn-lg btn-danger btn-block text-wrap disabled">No version available for Inform 7 {{ pl }}</a>
+		{%- endif -%}
+	{%- else %}
+		<p><a class="btn btn-lg btn-primary btn-block text-wrap btn-download" href="/extensions/{{ slug }}/versions/{{ current.version }}">{{ macros.icon( 'download' ) }} Download version {{ current.version }}{% if current.i7releases %}<small>For Inform 7 {{ current.i7releases }}</small>{% endif %}</a>
+	{% endif %}
 	<p><a href="/extensions/{{ slug }}/versions">View all versions</a>
 	{% if user && user.can.editthis %}
 		<h2>Actions</h2>
