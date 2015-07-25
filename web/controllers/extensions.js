@@ -253,13 +253,18 @@ routes.routemulti( router, 'extensions', [
 		}
 		
 		// Edit the public library approval setting
-		if ( typeof req.query.approved != 'undefined' )
+		var approved = req.query.approved;
+		if ( typeof approved != 'undefined' )
 		{
 			if ( !userCanEditAny )
 			{
 				return auth_error();
 			}
-			req.extension.approved = req.query.approved;
+			req.session.alert = {
+				type: 'Success',
+				msg: 'Extension ' + ( +( approved ) ? 'approved' : 'rejected' ),
+			};
+			req.extension.approved = approved;
 			req.extension.save()
 				.then( function()
 				{

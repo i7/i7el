@@ -1,25 +1,13 @@
 function add_hooks( db )
 {
 	
-	// After updating a Version, update the corresponding Extension so that it has the correct CurrentVersion
-	function update_CurrentVersion( instance, options, callback )
+	// After updating a Version, update the corresponding Extension
+	function update_CurrentVersion( instance, options )
 	{
-		var transaction = options.transaction;
-		instance.getExtension()
+		return instance.getExtension()
 			.then( function( ext )
 			{
-				ext.updateCurrentVersion( function( result )
-				{
-					if ( result[0] )
-					{
-						ext.save({ transaction: transaction })
-							.then( function() { callback(); } );
-					}
-					else
-					{
-						callback();
-					}
-				}, transaction );
+				return ext.updateData( options );
 			});
 	}
 	

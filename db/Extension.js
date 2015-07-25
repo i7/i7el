@@ -16,6 +16,10 @@ module.exports = function( sequelize, DataTypes )
 		{
 			// A list of maintainers
 			maintainers: [],
+			// I7 releases available for this extension
+			i7releases: '6L38, 6G60',
+			// Cached latest version number for each I7 release
+			byRelease: { 6G60: '1/150101', },
 			// Cached properties from the current version
 			current: { version, i7releases, createdAt, updatedAt },
 		}
@@ -30,36 +34,50 @@ module.exports = function( sequelize, DataTypes )
 	}, {
 		defaultScope: {},
 		instanceMethods: {
-			// Update the current version, and run some other update functions if it's changed
-			updateCurrentVersion: function( callback, transaction )
+			// Update the cached version data, returns a promise
+			updateData: function( options )
 			{
+				options = options || {};
 				var self = this;
-				var old_version = JSON.stringify( this.data.current || {} );
-				this.getVersions({
+				return this.getVersions({
 					// Order by i7 releases then version number
 					order: Version.orderByReleaseAndVersion,
-					limit: 1,
-					raw: 1,
-					transaction: transaction,
+					transaction: options.transaction,
 				})
 					.then( function( results )
 					{
-						var current = results[0];
-						var new_version = {
+						var i7releases = [], byRelease = {}, current;
+						results.forEach( function( vers )
+						{
+							// Update i7releases and byRelease
+							i7releases = i7releases.concat( vers.releasesToArray() );
+							vers.releasesToArray().forEach( function( i7release )
+							{
+								if ( !byRelease[i7release] || ( +( vers.version.replace( '/', '.' ) ) > +( byRelease[i7release].replace( '/', '.' ) ) ) )
+								{
+									byRelease[i7release] = vers.version;
+								}
+							});
+						});
+						self.data.i7releases = _.uniq( i7releases ).sort().reverse().join( ', ' );
+						self.data.byRelease = byRelease;
+						
+						// Check if the current version has changed
+						var current = results[0],
+						new_version = {
 							version: current.version,
 							i7releases: current.i7releases,
 							createdAt: current.createdAt,
 							updatedAt: current.updatedAt,
 						};
-						var changed = JSON.stringify( new_version ) != old_version;
-						if ( changed )
+						if ( JSON.stringify( new_version ) != JSON.stringify( self.data.current || {} ) )
 						{
 							self.data.current = new_version;
-							self.changed( 'data', true );
 							self.updateDescription( current );
 							self.updateDocumentation( current );
 						}
-						callback( [ changed, current ] );
+						self.changed( 'data', true );
+						return self.save({ transaction: options.transaction });
 					});
 			},
 			// Extract description from the extension rubric

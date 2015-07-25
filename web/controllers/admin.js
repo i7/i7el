@@ -70,12 +70,7 @@ routes.routemulti( router, 'admin', [
 				{
 					_.forEach( results, function( ext )
 					{
-						ext.updateCurrentVersion( function ( result )
-						{
-							ext.updateDescription( result[1] );
-							ext.updateDocumentation( result[1] );
-							ext.save();
-						});
+						ext.updateData();
 					});
 				});
 			req.session.alert = {
