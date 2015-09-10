@@ -46,6 +46,6 @@
 	<h2>Description</h2>
 	<p>{% if description %}{{ description }}{% else %}<i>No description provided</i>{% endif %}</p>
 	<h2>Documentation</h2>
-	<p>{% if documentation %}{{ documentation }}{% else %}<i>No documentation provided</i>{% endif %}</p>
+	<p style="white-space: pre-wrap;">{% if documentation %}{{ documentation }}{% else %}<i>No documentation provided</i>{% endif %}</p>
 </div>
 {% endblock %}

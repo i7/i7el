@@ -136,8 +136,8 @@ routes.routemulti( router, 'extensions', [
 		}
 		
 		var versionnum = details[1];
-		var title = details[2];
-		var author = details[3];
+		var title = _.trim( details[2] ).replace( /\s+/g, ' ' );
+		var author = _.trim( details[3] ).replace( /\s+/g, ' ' );
 		
 		if ( title == '' || author == '' )
 		{

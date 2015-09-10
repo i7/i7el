@@ -46,7 +46,7 @@ module.exports = function( sequelize, DataTypes )
 				})
 					.then( function( results )
 					{
-						var i7releases = [], byRelease = {}, current;
+						var i7releases = [], byRelease = {};
 						results.forEach( function( vers )
 						{
 							// Update i7releases and byRelease
