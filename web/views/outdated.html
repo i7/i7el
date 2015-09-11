@@ -1,0 +1,66 @@
+{% extends 'layout.html' %}
+{% import 'macros.html' as macros %}
+
+{% block title %}My extensions - {% endblock %}
+
+{% macro theading( text ) %}
+	<thead><tr><td class="table-outdated-heading" colspan="{% if project %}4{% else %}3{% endif %}"><h2>{{ text }}</h2></td></tr></thead>
+{% endmacro %}
+
+{% macro updatelinks( ext, version, link, classes, label ) %}
+	<span class="outdated">{{ version }}</span>
+	<a{% if link %} href="library:/extensions/{{ ext.slug }}/{{ ext.current }}"{% endif %} class="btn outdated {{ classes }}">{{ label }}</a>
+{% endmacro %}
+
+{% macro showversion( ext, kind, uptodate ) %}
+	{% if ( uptodate ) %}
+		{{ ext[ kind ] || '' }}
+	{% elif ext[ kind ] %}
+		{% if ext.versions[ kind ] == ext.versions.current %}
+			{{ updatelinks( ext, ext[ kind ], 0, 'btn-success disabled', 'Up to date' ) }}
+		{% elif ext.versions[ kind ] > ext.versions.current %}
+			{{ updatelinks( ext, ext[ kind ], 1, 'btn-warning', 'Revert' ) }}
+		{% else %}
+			{{ updatelinks( ext, ext[ kind ], 1, 'btn-primary', 'Update' ) }}
+		{% endif %}
+	{% endif %}
+{% endmacro %}
+
+{% macro listextensions( extensions, uptodate ) %}
+	<thead>
+		<tr>
+			<th>Extension</th>
+			<th>Current version</th>
+			<th>Your version</th>
+			{% if project %}<th>This project's version</th>{% endif %}
+		</tr>
+	</thead>
+	<tbody>
+		{% for ext in extensions %}
+			<tr>
+				<td><a href="/extensions/{{ ext.slug }}">{{ ext.title }} by {{ ext.author }}</a></td>
+				<td>{{ ext.current }}</td>
+				<td>{{ showversion( ext, 'shared', uptodate ) }}</td>
+				{% if project %}<td>{{ showversion( ext, 'project', uptodate ) }}</td>{% endif %}
+			</tr>
+		{% endfor %}
+	</tbody>
+{% endmacro %}
+
+{% block content %}
+<h1>My extensions</h1>
+<table class="table table-outdated">
+{% if extensions.update.length %}
+	{{ theading( 'Can be updated' ) }}
+	{{ listextensions( extensions.update ) }}
+{% endif %}
+{% if extensions.downgrade.length %}
+	{{ theading( 'Can be downgraded' ) }}
+	{{ listextensions( extensions.downgrade ) }}
+{% endif %}
+{% if extensions.uptodate.length %}
+	{{ theading( 'Up to date' ) }}
+	{{ listextensions( extensions.uptodate, true ) }}
+{% endif %}
+</table>
+{% endblock %}

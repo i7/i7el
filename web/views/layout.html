@@ -27,7 +27,9 @@
 				</div>
 			</form>
 			<ul class="nav navbar-nav navbar-right">
-				{% if user %}
+				{% if showingexts %}
+					<li><a href="/outdated">My extensions</a></li>
+				{% elif user %}
 					<li><span class="navbar-text">Welcome {{ user.email }}</span></li>
 					<li><a href="/logout">{{ macros.icon( 'sign-out' ) }} Sign out</a></li>
 				{% else %}

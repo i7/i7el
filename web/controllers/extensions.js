@@ -21,6 +21,7 @@ var multerparser = multer({
 
 var requireCreatePermissions = util.requirePermission( 'create' );
 var requireEditThisPermissions = util.requirePermission( 'editthis' );
+var showalert = util.showalert;
 
 module.exports = function( router )
 {
@@ -216,7 +217,7 @@ routes.routemulti( router, 'extensions', [
 ] ],
 
 // The main extension page
-[ 'get', ':slug', [ function show( req, res )
+[ 'get', ':slug', [ showalert, function show( req, res )
 	{
 		var ext = req.extension;
 		var data = {
@@ -224,11 +225,6 @@ routes.routemulti( router, 'extensions', [
 			description: ext.description || '',
 			documentation: ext.documentation || '',
 		};
-		if ( req.session.alert )
-		{
-			data.alert = req.session.alert;
-			delete req.session.alert;
-		}
 		/*// Show the I7 releases dialog when first creating an extension
 		if ( !req.session.showdialog )
 		{
@@ -243,7 +239,7 @@ routes.routemulti( router, 'extensions', [
 ] ],
 
 // Edit extension
-[ 'get', ':slug/edit', [ requireEditThisPermissions, function edit( req, res )
+[ 'get', ':slug/edit', [ requireEditThisPermissions, showalert, function edit( req, res )
 	{
 		var ext = req.extension;
 		var userCanEditAny = req.user.can.editany;
@@ -278,11 +274,6 @@ routes.routemulti( router, 'extensions', [
 			description: ext.description || '',
 			current: 'settings'
 		};
-		if ( req.session.alert )
-		{
-			data.alert = req.session.alert;
-			delete req.session.alert;
-		}
 		res.render( 'extensions-edit-settings', data );
 	}
 ] ],
@@ -316,18 +307,12 @@ routes.routemulti( router, 'extensions', [
 ] ],
 
 // Show the list of versions
-[ 'get', ':slug/versions', [ function list_versions( req, res )
+[ 'get', ':slug/versions', [ showalert, function list_versions( req, res )
 	{
-		var data = {};
-		if ( req.session.alert )
-		{
-			data.alert = req.session.alert;
-			delete req.session.alert;
-		}
 		req.extension.getVersions()
 			.then( function( results )
 			{
-				data.versions = results;
+				var data = { versions: results };
 				req.session.returnFromVersionEdit = req.path;
 				res.render( 'versions-list', data );
 			});

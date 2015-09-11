@@ -8,6 +8,7 @@ var routes = require( '../routes.js' );
 var util = require( '../util.js' );
 
 var requireadmin = util.requirePermission( 'admin' );
+var showalert = util.showalert;
 
 function preparevars( req )
 {
@@ -61,7 +62,7 @@ routes.routemulti( router, 'admin', [
 	}
 ] ],
 
-[ 'get', 'tools', [ requireadmin, function tools( req, res )
+[ 'get', 'tools', [ requireadmin, showalert, function tools( req, res )
 	{
 		if ( req.query.method == 'update' )
 		{
@@ -82,11 +83,6 @@ routes.routemulti( router, 'admin', [
 		else
 		{
 			var data = { current: 'tools' };
-			if ( req.session.alert )
-			{
-				data.alert = req.session.alert;
-				delete req.session.alert;
-			}
 			res.render( 'admin-tools', data );
 		}
 	}

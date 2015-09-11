@@ -19,9 +19,22 @@ function requirePermission( permission )
 	};
 }
 
+// Middleware for showing an alert if one has been stored in session
+function showalert( req, res, next )
+{
+	if ( req.session.alert )
+	{
+		res.locals.alert = req.session.alert;
+		delete req.session.alert;
+	}
+	next();
+}
+
 // Create URL slugs for extensions
 function slug( title, author )
 {
+	title = _.trim( title ).replace( /\s+/g, ' ' );
+	author = _.trim( author ).replace( /\s+/g, ' ' );
 	return speakingurl( title + ' by ' + author );
 }
 
@@ -48,6 +61,7 @@ function updatesettings()
 
 module.exports = {
 	requirePermission: requirePermission,
+	showalert: showalert,
 	slug: slug,
     updatesettings: updatesettings,
 };

@@ -37,6 +37,10 @@ app.use( function( req, res, next )
 		req.session.pl = req.query.pl;
 	}
 	res.locals.pl = req.session.pl;
+	if ( req.session.extensions )
+	{
+		res.locals.showingexts = 1;
+	}
 	next();
 });
 

@@ -8,6 +8,7 @@ function addroutes( app, router )
 	require( './controllers/search.js' )( router );
 	require( './controllers/admin.js' )( router );
 	require( './controllers/extensions.js' )( router );
+	require( './controllers/outdated.js' )( router );
 	
 	// Error handling
 	app.use( function( err, req, res, next )

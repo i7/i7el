@@ -86,3 +86,14 @@ h1 small
 	top: 19px;
 	width: 36px;
 }
+
+.outdated
+{
+	display: inline-block;
+	width: 7em;
+}
+
+.table-outdated th, .table-outdated-heading
+{
+	border-top: 0 !important;
+}
