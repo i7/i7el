@@ -1,0 +1,13 @@
+{% extends 'layout.html' %}
+
+{% block content %}
+<nav class="col-md-3" style="margin: 20px 0 0">
+	<ul class="nav nav-pills nav-stacked">
+		<li role="presentation"><a href="/extensions/{{ slug }}">{{ macros.icon( 'arrow-left fa-fw' ) }} Back to this extension</a></li>
+		<li role="presentation" {% if current == 'settings' %}class="active"{% endif %}><a href="/extensions/{{ slug }}/edit">{{ macros.icon( 'pencil fa-fw' ) }} Settings</a></li>
+	</ul>
+</nav>
+<div class="col-md-9">
+	{% block extensioneditcontent %}{% endblock %}
+</div>
+{% endblock %}

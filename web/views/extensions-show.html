@@ -33,13 +33,23 @@
 	{%- else %}
 		<p><a class="btn btn-lg btn-primary btn-block text-wrap btn-download" href="/extensions/{{ slug }}/versions/{{ current.version }}">{{ macros.icon( 'download' ) }} Download version {{ current.version }}{% if current.i7releases %}<small>For Inform 7 {{ current.i7releases }}</small>{% endif %}</a>
 	{% endif %}
-	<p><a href="/extensions/{{ slug }}/versions">View all versions</a>
+	<div class="list-group">
+		<a class="list-group-item" href="/extensions/{{ slug }}/versions">{{ macros.icon( 'history fa-fw' ) }} View all versions</a>
+	</div>
+	{% if data.website || data.discussion || data.bugs %}
+		<h2>Links</h2>
+		<div class="list-group">
+			{% if data.website %}<a class="list-group-item" href="{{ data.website }}">{{ macros.icon( 'globe fa-fw' ) }} Website</a>{% endif %}
+			{% if data.discussion %}<a class="list-group-item" href="{{ data.discussion }}">{{ macros.icon( 'comments fa-fw' ) }} Discussion page</a>{% endif %}
+			{% if data.bugs %}<a class="list-group-item" href="{{ data.bugs }}">{{ macros.icon( 'bug fa-fw' ) }} Bug reports</a>{% endif %}
+		</div>
+	{% endif %}
 	{% if user && user.can.editthis %}
 		<h2>Actions</h2>
-		<ul class="list-unstyled">
-			<li><a href="/extensions/new">Upload a new version</a></li>
-			<li><a href="/extensions/{{ slug }}/edit">Edit</a></li>
-		</ul>
+		<div class="list-group">
+			<a class="list-group-item" href="/extensions/new">{{ macros.icon( 'upload fa-fw' ) }} Upload a new version</a>
+			<a class="list-group-item" href="/extensions/{{ slug }}/edit">{{ macros.icon( 'pencil fa-fw' ) }} Edit</a>
+		</div>
 	{% endif %}
 </div>
 <div class="col-md-8">

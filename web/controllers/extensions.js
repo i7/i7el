@@ -2,6 +2,7 @@
 
 var _ = require( 'lodash' );
 var contentDisposition = require( 'content-disposition' );
+var validator = require( 'validator' );
 var urlencodedParser = require( 'body-parser' ).urlencoded({ extended: false });
 var multer  = require( 'multer' );
 
@@ -271,6 +272,46 @@ routes.routemulti( router, 'extensions', [
 					res.redirect( '/extensions/' + ext.slug );
 				});
 		}
+		
+		// Show the settings page
+		var data = {
+			description: ext.description || '',
+			current: 'settings'
+		};
+		if ( req.session.alert )
+		{
+			data.alert = req.session.alert;
+			delete req.session.alert;
+		}
+		res.render( 'extensions-edit-settings', data );
+	}
+] ],
+
+// Save extension data
+[ 'post', ':slug/edit', [ requireEditThisPermissions, urlencodedParser, function saveExtension( req, res )
+	{
+		// Trim and validate urls
+		function saveurl( prop )
+		{
+			var url = _.trim( req.body[ prop ] );
+			req.extension.data[ prop ] = validator.isURL( url ) ? url : null;
+		}
+		
+		var ext = req.extension;
+		ext.description = _.trim( req.body.description );
+		saveurl( 'website' );
+		saveurl( 'discussion' );
+		saveurl( 'bugs' );
+		ext.changed( 'data', true );
+		ext.save()
+			.then( function()
+			{
+				req.session.alert = {
+					type: 'Success',
+					msg: 'Extension settings saved',
+				};
+				res.redirect( '/extensions/' + ext.slug + '/edit' );
+			});
 	}
 ] ],
 

@@ -1,0 +1,41 @@
+{% extends 'extensions-edit-layout.html' %}
+{% import 'macros.html' as macros %}
+
+{% block title %}
+{{ title }} by {{ author }} settings - 
+{% endblock %}
+
+{% block extensioneditcontent %}
+<h1>{{ title }} by {{ author }} settings</h1>
+{{ macros.alert( alert ) }}
+<form action="/extensions/{{ slug }}/edit" method="post">
+	<div class="form-group">
+		<label for="description">Description</label> (A short description, no more than three sentences is recommended)
+		<textarea class="form-control" rows="3" name="description" id="description">{{ description }}</textarea>
+	</div>
+	<div class="form-group">
+		<label for="website">Website</label>
+		<div class="input-group">
+			<span class="input-group-addon">{{ macros.icon( 'globe fa-fw' ) }}</span>
+			<input type="url" class="form-control" name="website" id="website" value="{{ data.website }}">
+		</div>
+	</div>
+	<div class="form-group">
+		<label for="discussion">Discussion page</label>
+		<div class="input-group">
+			<span class="input-group-addon">{{ macros.icon( 'comments fa-fw' ) }}</span>
+			<input type="url" class="form-control" name="discussion" id="discussion" value="{{ data.discussion }}">
+		</div>
+	</div>
+	<div class="form-group">
+		<label for="bugs">Bug reports</label>
+		<div class="input-group">
+			<span class="input-group-addon">{{ macros.icon( 'bug fa-fw' ) }}</span>
+			<input type="url" class="form-control" name="bugs" id="bugs" value="{{ data.bugs }}">
+		</div>
+	</div>
+	<div class="form-group">
+		<button type="submit" class="btn btn-default">Save</button>
+	</div>
+</form>
+{% endblock %}

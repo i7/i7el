@@ -4,7 +4,7 @@
 	<meta charset="utf-8">
 	<meta name="viewport" content="width=device-width, initial-scale=1">
 	<title>{% block title %}{% endblock %}The Inform 7 Extensions Library</title>
-	<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.3.0/css/font-awesome.min.css">
+	<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.4.0/css/font-awesome.min.css">
 	<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/css/bootstrap.min.css">
 	<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/css/bootstrap-theme.min.css">
 	<link rel="stylesheet" href="/static/client.css">
@@ -26,13 +26,14 @@
 					</span>
 				</div>
 			</form>
-			<p class="navbar-text navbar-right">
-			{% if user %}
-				Welcome {{ user.email }} <a href="/logout" class="navbar-link">(Log out)</a>
-			{% else %}
-				<a href="/login" class="navbar-link">Log in with Google</a>
-			{% endif %}
-			</p>
+			<ul class="nav navbar-nav navbar-right">
+				{% if user %}
+					<li><span class="navbar-text">Welcome {{ user.email }}</span></li>
+					<li><a href="/logout">{{ macros.icon( 'sign-out' ) }} Sign out</a></li>
+				{% else %}
+					<li><a href="/login">{{ macros.icon( 'sign-in' ) }} Sign in with Google</a></li>
+				{% endif %}
+			</ul>
 		</div>
 	</nav>
 	<div class="container">

@@ -19,7 +19,8 @@
     "sequelize": "^3.4.1",
     "session-file-store": "0.0.19",
     "speakingurl": "^6.0.0",
-    "swig": "^1.4.2"
+    "swig": "^1.4.2",
+    "validator": "^4.0.5"
   },
   "devDependencies": {},
   "author": "Dannii Willis",

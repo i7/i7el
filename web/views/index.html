@@ -9,19 +9,19 @@
 	<h2>Library statistics</h2>
 	<p>{{ extensions.count }} total extensions</p>
 	<h2>Actions</h2>
-	<ul class="list-unstyled">
+	<div class="list-group">
 		{% if user %}
 			{% if user.can.create %}
-				<li><a href="/extensions/new">Upload new extension</a></li>
+				<a class="list-group-item" href="/extensions/new">{{ macros.icon( 'upload fa-fw' ) }} Upload new extension</a>
 			{% endif %}
 			{% if user.can.admin %}
-				<li><a href="/admin">Admin</a></li>
+				<a class="list-group-item" href="/admin">{{ macros.icon( 'cog fa-fw' ) }} Admin</a>
 			{% endif %}
-			<li><a href="/logout">Log out</a></li>
+			<a class="list-group-item" href="/logout">{{ macros.icon( 'sign-out fa-fw' ) }} Sign out</a>
 		{% else %}
-			<li><a href="/login">Log in</a></li>
+			<a class="list-group-item" href="/login">{{ macros.icon( 'sign-in fa-fw' ) }} Sign in with Google</a>
 		{% endif %}
-	</ul>
+	</div>
 </div>
 <div class="col-md-8">
 	<h2>Recently updated extensions</h2>
