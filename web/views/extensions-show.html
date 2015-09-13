@@ -4,6 +4,10 @@
 
 {% block title %}{{ title }} by {{ author }} - {% endblock %}
 
+{% macro downloadbtn( slug, findVers, classes, msg, link, web, smalltext ) %}
+	<p><a class="btn btn-lg btn-{{ classes }} btn-block text-wrap btn-download"{% if link %} href="{% if !web %}library:{% endif %}/extensions/{{ slug }}/versions/{{ findVers }}"{% endif %}>{% if link %}{{ macros.icon( 'download' ) }} {% endif %}{{ msg }}{{ smalltext|safe }}</a>
+{% endmacro %}
+
 {% block content %}
 <div class="col-md-12">
 	<h1>{{ title }} by {{ author }} <small>
@@ -26,12 +30,38 @@
 	{% if pl -%}
 		{%- set findVers = data.byRelease[pl] -%}
 		{%- if findVers -%}
-			<p><a class="btn btn-lg btn-primary btn-block text-wrap btn-download" href="/extensions/{{ slug }}/versions/{{ findVers }}">{{ macros.icon( 'download' ) }} Install version {{ findVers }}</a>
+			{%- if !userext || !userext.shared -%}
+				{{ downloadbtn( slug, findVers, 'primary', 'Install version ' + findVers, 1 ) }}
+			{%- endif -%}
+			{%- if userext -%}
+				{%- if userext.shared -%}
+					{%- if findVers == userext.shared -%}
+						{{ downloadbtn( slug, findVers, 'success disabled', 'Version ' + findVers + ' up to date' ) }}
+					{%- elif findVers > userext.shared -%}
+						{{ downloadbtn( slug, findVers, 'primary', 'Update to version ' + findVers, 1 ) }}
+					{%- else -%}
+						{{ downloadbtn( slug, findVers, 'warning', 'Revert to version ' + findVers, 1 ) }}
+					{%- endif -%}
+				{%- endif -%}
+				{%- if userext.project -%}
+					{%- if findVers == userext.project -%}
+						{{ downloadbtn( slug, findVers, 'success disabled', "This project's copy (version " + findVers + ') is up to date' ) }}
+					{%- elif findVers > userext.project -%}
+						{{ downloadbtn( slug, findVers, 'primary', "Update this project's copy to version " + findVers, 1 ) }}
+					{%- else -%}
+						{{ downloadbtn( slug, findVers, 'warning', "Revert this project's copy to version " + findVers, 1 ) }}
+					{%- endif -%}
+				{%- endif -%}
+			{%- endif -%}
 		{%- else -%}
-			<p><a class="btn btn-lg btn-danger btn-block text-wrap disabled">No version available for Inform 7 {{ pl }}</a>
+			{{ downloadbtn( slug, findVers, 'danger disabled', 'No version available for Inform 7 ' + pl ) }}
 		{%- endif -%}
 	{%- else %}
-		<p><a class="btn btn-lg btn-primary btn-block text-wrap btn-download" href="/extensions/{{ slug }}/versions/{{ current.version }}">{{ macros.icon( 'download' ) }} Download version {{ current.version }}{% if current.i7releases %}<small>For Inform 7 {{ current.i7releases }}</small>{% endif %}</a>
+		{%- if current.i7releases -%}
+			{{ downloadbtn( slug, current.version, 'primary', 'Download version ' + current.version, 1, 1, '<small>For Inform 7 ' + current.i7releases + '</small>' ) }}
+		{%- else %}
+			{{ downloadbtn( slug, current.version, 'primary', 'Download version ' + current.version, 1, 1 ) }}
+		{%- endif -%}
 	{% endif %}
 	<div class="list-group">
 		<a class="list-group-item" href="/extensions/{{ slug }}/versions">{{ macros.icon( 'history fa-fw' ) }} View all versions</a>

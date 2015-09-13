@@ -14,13 +14,24 @@ function categorise_exts( extensions )
 		update: [],
 		downgrade: [],
 		uptodate: [],
+		noversion: [],
+		missing: [],
 	};
-	
 	_.forEach( extensions, function( ext )
 	{
 		var uptodate = true,
 		versions = ext.versions;
 		
+		if ( !versions )
+		{
+			results.missing.push( ext );
+			return;
+		}
+		if ( !versions.current )
+		{
+			results.noversion.push( ext );
+			return;
+		}
 		if ( versions.current > versions.shared || versions.current > versions.project )
 		{
 			results.update.push( ext );
@@ -37,9 +48,11 @@ function categorise_exts( extensions )
 		}
 	});
 	
-	results.update = _.sortBy( results.update, 'slug' );
-	results.downgrade = _.sortBy( results.downgrade, 'slug' );
-	results.uptodate = _.sortBy( results.uptodate, 'slug' );
+	results.update = _.sortByAll( results.update, ['author', 'title'] );
+	results.downgrade = _.sortByAll( results.downgrade, ['author', 'title'] );
+	results.uptodate = _.sortByAll( results.uptodate, ['author', 'title'] );
+	results.noversion = _.sortByAll( results.noversion, ['author', 'title'] );
+	results.missing = _.sortByAll( results.missing, ['author', 'title'] );
 	return results;
 }
 
@@ -96,14 +109,15 @@ routes.routemulti( router, 'outdated', [
 		})
 			.then( function( results )
 			{
-				var project = false;
+				var hasprojectexts = false;
 				
 				// Go through and process the version numbers
 				_.forEach( results, function( data )
 				{
 					var ext = extensions[ data.slug ];
-					ext.current = ( data.data.i7releases || '').indexOf( postdata.release ) >= 0 && data.data.current.version;
-					ext.versions = { current: +( ext.current.replace( '/', '.' ) ) };
+					ext.versions = {};
+					ext.current = ( data.data.i7releases || '').indexOf( postdata.release ) >= 0 ? data.data.current.version : '';
+					ext.versions.current = +( ext.current.replace( '/', '.' ) );
 					if ( ext.shared )
 					{
 						ext.versions.shared = +( ext.shared.replace( '/', '.' ) );
@@ -111,16 +125,16 @@ routes.routemulti( router, 'outdated', [
 					if ( ext.project )
 					{
 						ext.versions.project = +( ext.project.replace( '/', '.' ) );
-						project = true;
+						hasprojectexts = true;
 					}
 				});
-				// Filter out extensions the i7el doesn't have
-				extensions = _.filter( extensions, 'versions' );
 				
 				req.session.extensions = extensions;
+				req.session.hasprojectexts = hasprojectexts;
 				var data = {
 					extensions: categorise_exts( extensions ),
-					project: project,
+					hasprojectexts: hasprojectexts,
+					showingexts: 1,
 				};
 				res.render( 'outdated', data );
 			});
@@ -129,27 +143,18 @@ routes.routemulti( router, 'outdated', [
 
 [ 'get', '', [ jsonParser, urlencodedParser, function outdatedAgain( req, res )
 	{
-		var extensions = req.session.extensions,
-		project = false;
+		var extensions = req.session.extensions;
 		
 		if ( !extensions )
 		{
 			return res.status( 400 ).render( 'error', { msg: 'No extension data' } );
 		}
 		
-		_.forEach( extensions, function( ext )
-		{
-			if ( ext.project )
-			{
-				project = true;
-			}
-		});
-		
 		var data = {
 			extensions: categorise_exts( extensions ),
-			project: project,
+			hasprojectexts: req.session.hasprojectexts,
+			showingexts: 1,
 		};
-		
 		res.render( 'outdated', data );
 	}
 ] ],

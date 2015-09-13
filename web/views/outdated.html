@@ -4,7 +4,7 @@
 {% block title %}My extensions - {% endblock %}
 
 {% macro theading( text ) %}
-	<thead><tr><td class="table-outdated-heading" colspan="{% if project %}4{% else %}3{% endif %}"><h2>{{ text }}</h2></td></tr></thead>
+	<thead><tr><td class="table-outdated-heading" colspan="{% if hasprojectexts %}4{% else %}3{% endif %}"><h2>{{ text }}</h2></td></tr></thead>
 {% endmacro %}
 
 {% macro updatelinks( ext, version, link, classes, label ) %}
@@ -12,8 +12,8 @@
 	<a{% if link %} href="library:/extensions/{{ ext.slug }}/{{ ext.current }}"{% endif %} class="btn outdated {{ classes }}">{{ label }}</a>
 {% endmacro %}
 
-{% macro showversion( ext, kind, uptodate ) %}
-	{% if ( uptodate ) %}
+{% macro showversion( ext, kind, nobtns ) %}
+	{% if ( nobtns ) %}
 		{{ ext[ kind ] || '' }}
 	{% elif ext[ kind ] %}
 		{% if ext.versions[ kind ] == ext.versions.current %}
@@ -26,22 +26,22 @@
 	{% endif %}
 {% endmacro %}
 
-{% macro listextensions( extensions, uptodate ) %}
+{% macro listextensions( extensions, nobtns, missing ) %}
 	<thead>
 		<tr>
 			<th>Extension</th>
 			<th>Current version</th>
 			<th>Your version</th>
-			{% if project %}<th>This project's version</th>{% endif %}
+			{% if hasprojectexts %}<th>This project's version</th>{% endif %}
 		</tr>
 	</thead>
 	<tbody>
 		{% for ext in extensions %}
 			<tr>
-				<td><a href="/extensions/{{ ext.slug }}">{{ ext.title }} by {{ ext.author }}</a></td>
+				<td>{% if !missing %}<a href="/extensions/{{ ext.slug }}">{% endif %}{{ ext.title }} by {{ ext.author }}{% if !missing %}</a>{% endif %}</td>
 				<td>{{ ext.current }}</td>
-				<td>{{ showversion( ext, 'shared', uptodate ) }}</td>
-				{% if project %}<td>{{ showversion( ext, 'project', uptodate ) }}</td>{% endif %}
+				<td>{{ showversion( ext, 'shared', nobtns ) }}</td>
+				{% if hasprojectexts %}<td>{{ showversion( ext, 'project', nobtns ) }}</td>{% endif %}
 			</tr>
 		{% endfor %}
 	</tbody>
@@ -61,6 +61,14 @@
 {% if extensions.uptodate.length %}
 	{{ theading( 'Up to date' ) }}
 	{{ listextensions( extensions.uptodate, true ) }}
+{% endif %}
+{% if extensions.noversion.length %}
+	{{ theading( 'No version available for Inform ' + pl ) }}
+	{{ listextensions( extensions.noversion, true ) }}
+{% endif %}
+{% if extensions.missing.length %}
+	{{ theading( 'Unknown extensions' ) }}
+	{{ listextensions( extensions.missing, true, true ) }}
 {% endif %}
 </table>
 {% endblock %}

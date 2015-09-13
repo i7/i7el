@@ -225,6 +225,10 @@ routes.routemulti( router, 'extensions', [
 			description: ext.description || '',
 			documentation: ext.documentation || '',
 		};
+		if ( req.session.extensions )
+		{
+			data.userext = req.session.extensions[ ext.slug ];
+		}
 		/*// Show the I7 releases dialog when first creating an extension
 		if ( !req.session.showdialog )
 		{
