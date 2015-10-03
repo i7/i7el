@@ -19,6 +19,7 @@ var multerparser = multer({
 	putSingleFilesInArray: true,
 });
 
+var requireAdminPermissions = util.requirePermission( 'admin' );
 var requireCreatePermissions = util.requirePermission( 'create' );
 var requireEditThisPermissions = util.requirePermission( 'editthis' );
 var showalert = util.showalert;
@@ -246,27 +247,21 @@ routes.routemulti( router, 'extensions', [
 [ 'get', ':slug/edit', [ requireEditThisPermissions, showalert, function edit( req, res )
 	{
 		var ext = req.extension;
-		var userCanEditAny = req.user.can.editany;
-		
-		function auth_error()
-		{
-			return res.status( 403 ).render( 'error', { type: 'authentication' } );
-		}
 		
 		// Edit the public library approval setting
 		var approved = req.query.approved;
 		if ( typeof approved != 'undefined' )
 		{
-			if ( !userCanEditAny )
+			if ( !req.user.can.editany )
 			{
-				return auth_error();
+				return res.status( 403 ).render( 'error', { type: 'authentication' } );
 			}
 			req.session.alert = {
 				type: 'Success',
 				msg: 'Extension ' + ( +( approved ) ? 'approved' : 'rejected' ),
 			};
 			req.extension.approved = approved;
-			req.extension.save()
+			return req.extension.save()
 				.then( function()
 				{
 					res.redirect( '/extensions/' + ext.slug );
@@ -307,6 +302,32 @@ routes.routemulti( router, 'extensions', [
 				};
 				res.redirect( '/extensions/' + ext.slug + '/edit' );
 			});
+	}
+] ],
+
+// Delete an extension
+[ 'get', ':slug/edit/delete', [ requireAdminPermissions, function deleteExt( req, res )
+	{
+		var ext = req.extension;
+		var name = ext.title + ' by ' + ext.author;
+		
+		if ( req.query.confirm )
+		{
+			return ext.destroy()
+				.then( function()
+				{
+					req.session.alert = {
+						type: 'Success',
+						msg: 'Extension ' + name + ' deleted',
+					};
+					res.redirect( '/' );
+				});
+		}
+		
+		var data = {
+			current: 'delete'
+		};
+		res.render( 'extensions-edit-delete', data );
 	}
 ] ],
 

@@ -7,6 +7,8 @@ var db = require( '../../db' );
 var routes = require( '../routes.js' );
 var util = require( '../util.js' );
 
+var showalert = util.showalert;
+
 function merge_pl( req, query )
 {
 	if ( req.session.pl )
@@ -24,7 +26,7 @@ module.exports = function( router )
 
 routes.routemulti( router, null, [
 
-[ 'get', '', [ function index( req, res )
+[ 'get', '', [ showalert, function index( req, res )
 	{
 		var query = {
 			order: [[ 'updatedAt', 'DESC' ]],

@@ -2,11 +2,11 @@
 {% import 'macros.html' as macros %}
 
 {% block title %}
-{{ title }} by {{ author }} settings - 
+{{ title }} by {{ author }}: settings - 
 {% endblock %}
 
 {% block extensioneditcontent %}
-<h1>{{ title }} by {{ author }} settings</h1>
+<h1>{{ title }} by {{ author }}: settings</h1>
 {{ macros.alert( alert ) }}
 <form action="/extensions/{{ slug }}/edit" method="post">
 	<div class="form-group">

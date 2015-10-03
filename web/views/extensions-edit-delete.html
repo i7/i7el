@@ -1,0 +1,22 @@
+{% extends 'extensions-edit-layout.html' %}
+{% import 'macros.html' as macros %}
+
+{% block title %}
+{{ title }} by {{ author }}: delete - 
+{% endblock %}
+
+{% block extensioneditcontent %}
+<h1>{{ title }} by {{ author }}: delete</h1>
+{{ macros.alert( alert ) }}
+<form action="/extensions/{{ slug }}/edit/delete" method="get">
+	<div class="form-group checkbox">
+	<label>
+		<input type="checkbox" name="confirm" id="confirm">
+		Please confirm you want to delete this extension. <em>This cannot be undone!</em>
+	</label>
+	</div>
+	<div class="form-group">
+		<button type="submit" class="btn btn-default">Delete</button>
+	</div>
+</form>
+{% endblock %}
