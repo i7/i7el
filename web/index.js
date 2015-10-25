@@ -1,8 +1,9 @@
 // Set up an Express web server
 
 var compression = require( 'compression' );
+var dateFilter = require( 'nunjucks-date-filter' );
 var express = require( 'express' );
-var swig = require( 'swig' );
+var nunjucks = require( 'nunjucks' );
 
 var authentication = require( './authentication.js' );
 var routes = require( './routes.js' );
@@ -14,17 +15,18 @@ app.set( 'port', process.env.PORT || 3000 );
 
 app.use( compression() );
 
-// Set up templates using Swig
-app.engine( 'html', swig.renderFile );
+// Set up templates using Nunjucks
 app.set( 'view engine', 'html' );
-app.set( 'views', __dirname + '/views' );
-
+var nunjucks_config = { express: app };
 if ( process.env.NODE_ENV && process.env.NODE_ENV == 'development' )
 {
 	app.set( 'view cache', false );
-	swig.setDefaults({ cache: false });
+	nunjucks_config.noCache = true;
 }
+var nunjucks_env = nunjucks.configure( __dirname + '/views', nunjucks_config );
+dateFilter.install( nunjucks_env );
 
+// Static files
 app.use( '/static', express.static( './web/static', {} ) );
 
 authentication.setup( app );

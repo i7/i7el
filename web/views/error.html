@@ -13,7 +13,7 @@
 	<div class="alert alert-danger" role="alert">
 		{% if type == 'authentication' %}
 			<p><strong>User not authorised</strong>
-			{% if !user %}
+			{% if not user %}
 				<p>Please <a class="alert-link" href="/login">log in</a>
 			{% endif %}
 		

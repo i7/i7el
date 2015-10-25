@@ -44,7 +44,7 @@ $( function()
 		</div>
 		<div class="form-group">
 			{%- set warn = thisi7releases.length == 0 %}
-			<div class="releases-warning alert alert-warning" role="alert" {% if !warn %}style="display: none;"{% endif %}>
+			<div class="releases-warning alert alert-warning" role="alert" {% if not warn %}style="display: none;"{% endif %}>
 				<b>Warning:</b> No Inform 7 releases selected! Users will not be able to download this version of the extension from within Inform 7.
 			</div>
 			<button type="submit" class="btn {% if warn %}btn-warning{% else %}btn-default{% endif %}">Save</button>

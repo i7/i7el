@@ -5,32 +5,32 @@
 {% block title %}{{ title }} by {{ author }} - {% endblock %}
 
 {% macro downloadbtn( slug, findVers, classes, msg, link, web, smalltext ) %}
-	<p><a class="btn btn-lg btn-{{ classes }} btn-block text-wrap btn-download"{% if link %} href="{% if !web %}library:{% endif %}/extensions/{{ slug }}/versions/{{ findVers }}"{% endif %}>{% if link %}{{ macros.icon( 'download' ) }} {% endif %}{{ msg }}{{ smalltext|safe }}</a>
+	<p><a class="btn btn-lg btn-{{ classes }} btn-block text-wrap btn-download"{% if link %} href="{% if not web %}library:{% endif %}/extensions/{{ slug }}/versions/{{ findVers }}"{% endif %}>{% if link %}{{ macros.icon( 'download' ) }} {% endif %}{{ msg }}{{ smalltext|safe }}</a>
 {% endmacro %}
 
 {% block content %}
 <div class="col-md-12">
 	<h1>{{ title }} by {{ author }} <small>
 		<a href="/extensions?search={{ author }}" title="Search for other extensions by this author">{{ macros.icon( 'user', 'Search for other extensions by this author' ) }}</a>
-		{% if user && user.can.editany -%}
+		{% if user and user.can.editany -%}
 			{%- if approved -%}
 				<a class="text-success" href="/extensions/{{ slug }}/edit/?approved=0" title="Approved for the Public Library; click to reject">{{ macros.icon( 'check-circle', 'Approved for the Public Library; click to reject' ) }}</a>
 			{%- else -%}
 				<a class="text-muted" href="/extensions/{{ slug }}/edit/?approved=1" title="Not approved for the Public Library; click to approve">{{ macros.icon( 'check-circle', 'Not approved for the Public Library; click to approve' ) }}</a>
 			{%- endif -%}
-		{%- elif approved && !pl -%}
+		{%- elif approved and not pl -%}
 			{{ macros.icon( 'check-circle text-success', 'Approved for the Public Library', 'Approved for the Public Library' ) }}
 		{%- endif -%}
 	</small></h1>
 </div>
 {{ macros.alert( alert, 'col-md-12' ) }}
-{% if !current.i7releases %}{{ macros.alert( { type: 'Warning', msg: 'No Inform 7 releases have been specified' }, 'col-md-12' ) }}{% endif %}
+{% if not current.i7releases %}{{ macros.alert( { type: 'Warning', msg: 'No Inform 7 releases have been specified' }, 'col-md-12' ) }}{% endif %}
 <div class="col-md-4">
 	<h2>Versions</h2>
 	{% if pl -%}
 		{%- set findVers = data.byRelease[pl] -%}
 		{%- if findVers -%}
-			{%- if !userext || !userext.shared -%}
+			{%- if not userext or not userext.shared -%}
 				{{ downloadbtn( slug, findVers, 'primary', 'Install version ' + findVers, 1 ) }}
 			{%- endif -%}
 			{%- if userext -%}
@@ -66,7 +66,7 @@
 	<div class="list-group">
 		<a class="list-group-item" href="/extensions/{{ slug }}/versions">{{ macros.icon( 'history fa-fw' ) }} View all versions</a>
 	</div>
-	{% if data.website || data.discussion || data.bugs %}
+	{% if data.website or data.discussion or data.bugs %}
 		<h2>Links</h2>
 		<div class="list-group">
 			{% if data.website %}<a class="list-group-item" href="{{ data.website }}">{{ macros.icon( 'globe fa-fw' ) }} Website</a>{% endif %}
@@ -74,7 +74,7 @@
 			{% if data.bugs %}<a class="list-group-item" href="{{ data.bugs }}">{{ macros.icon( 'bug fa-fw' ) }} Bug reports</a>{% endif %}
 		</div>
 	{% endif %}
-	{% if user && user.can.editthis %}
+	{% if user and user.can.editthis %}
 		<h2>Actions</h2>
 		<div class="list-group">
 			<a class="list-group-item" href="/extensions/new">{{ macros.icon( 'upload fa-fw' ) }} Upload a new version</a>

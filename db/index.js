@@ -14,7 +14,7 @@ var options = {
 };
 
 // Connect to the database
-console.log( 'i7el: Connecting to database' );
+console.log( 'i7el: Connecting to database ' + env );
 try
 {
 	var config = require( __dirname + '/config.json' )[env];

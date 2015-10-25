@@ -38,7 +38,7 @@
 	<tbody>
 		{% for ext in extensions %}
 			<tr>
-				<td>{% if !missing %}<a href="/extensions/{{ ext.slug }}">{% endif %}{{ ext.title }} by {{ ext.author }}{% if !missing %}</a>{% endif %}</td>
+				<td>{% if not missing %}<a href="/extensions/{{ ext.slug }}">{% endif %}{{ ext.title }} by {{ ext.author }}{% if not missing %}</a>{% endif %}</td>
 				<td>{{ ext.current }}</td>
 				<td>{{ showversion( ext, 'shared', nobtns ) }}</td>
 				{% if hasprojectexts %}<td>{{ showversion( ext, 'project', nobtns ) }}</td>{% endif %}

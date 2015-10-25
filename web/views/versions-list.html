@@ -15,7 +15,7 @@
 			<th>Download</th>
 			<th>Compatible Inform 7 releases</th>
 			<th>Uploaded on</th>
-			{% if user && user.can.editthis %}
+			{% if user and user.can.editthis %}
 				<th>Uploaded by</th>
 			{% endif %}
 		</tr>
@@ -25,9 +25,9 @@
 			<tr{% if version.version == data.current.version %} class="info"{% endif %}>
 				<td>{{ version.version }}</td>
 				<td><a class="btn btn-default" href="/extensions/{{ slug }}/versions/{{ version.version }}" role="button">{{ macros.icon( 'download' ) }} Download</a></td>
-				<td>{% if user && user.can.editthis %}<a href="/extensions/{{ slug }}/versions/{{ version.version }}/edit" title="Edit releases" aria-label="Edit releases">{{ macros.icon( 'pencil' ) }}</a> {% endif %}{{ version.i7releases }}</td>
-				<td>{{ version.createdAt|date('F j, Y') }}</td>
-				{% if user && user.can.editthis %}
+				<td>{% if user and user.can.editthis %}<a href="/extensions/{{ slug }}/versions/{{ version.version }}/edit" title="Edit releases" aria-label="Edit releases">{{ macros.icon( 'pencil' ) }}</a> {% endif %}{{ version.i7releases }}</td>
+				<td>{{ version.createdAt|date('MMMM D, YYYY') }}</td>
+				{% if user and user.can.editthis %}
 					<td><a href="mailto:{{ version.uploader }}">{{ version.uploader }}</a></td>
 				{% endif %}
 			</tr>

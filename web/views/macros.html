@@ -16,8 +16,8 @@
 	{%- set i7r = current.i7releases -%}
 	<div class="media">
 		<div class="media-left media-ext" aria-hidden="true">
-			{{ macros.icon( 'file-o' ) }}
-			{% if i7r %}<span class="i7r">{{ i7r.substr( 0, 2 ) + '<br>' + i7r.substr( 2, 2 ) }}</span>{% endif %}
+			{{ icon( 'file-o' ) }}
+			{% if i7r %}<span class="i7r">{{ i7r.substr( 0, 2 ) }}<br>{{ i7r.substr( 2, 2 ) }}</span>{% endif %}
 		</div>
 		<div class="media-body">
 			<h3 class="media-heading"><a href="/extensions/{{ ext.slug }}">{{ ext.title }}</a> by {{ ext.author }}</h3>
