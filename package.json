@@ -14,7 +14,7 @@
     "nunjucks": "^2.1.0",
     "nunjucks-date-filter": "^0.1.1",
     "passport": "^0.3.0",
-    "passport-google-openidconnect": "0.0.4",
+    "passport-google-oauth": "^0.2.0",
     "pg": "^4.2.0",
     "pg-hstore": "^2.3.2",
     "search-text-tokenizer": "^1.0.0",
@@ -23,7 +23,6 @@
     "speakingurl": "^7.0.0",
     "validator": "^4.0.5"
   },
-  "devDependencies": {},
   "author": "Dannii Willis",
   "license": "MIT",
   "repository": "i7/i7el",

@@ -30,7 +30,7 @@
 				{% if showingexts %}
 					<li><a href="/outdated">My extensions</a></li>
 				{% elif user %}
-					<li><span class="navbar-text">Welcome {{ user.email }}</span></li>
+					<li><span class="navbar-text">Welcome {{ user.displayName }}</span></li>
 					<li><a href="/logout">{{ macros.icon( 'sign-out' ) }} Sign out</a></li>
 				{% else %}
 					<li><a href="/login">{{ macros.icon( 'sign-in' ) }} Sign in with Google</a></li>

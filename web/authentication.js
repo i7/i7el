@@ -1,7 +1,7 @@
 // Authentication using Passport and Google OpenID Connect
 
 var _ = require( 'lodash' );
-var GoogleStrategy = require( 'passport-google-openidconnect' ).Strategy;
+var GoogleStrategy = require( 'passport-google-oauth' ).OAuth2Strategy;
 var passport = require( 'passport' );
 var session = require( 'express-session' );
 var FileStore = require( 'session-file-store' )( session );
@@ -25,19 +25,22 @@ function setup( app )
 
 	app.use( passport.initialize() );
 	app.use( passport.session() );
-
+	
 	// Set up Passport
-	var OAUTH_SETTINGS = JSON.parse( process.env.OAUTH_SETTINGS );
-	OAUTH_SETTINGS.scope = 'email';
-
-	passport.use( new GoogleStrategy( OAUTH_SETTINGS, function( accessToken, refreshToken, profile, done )
-	{
-		done( null, new User( app, profile._json.email ) );
-	}) );
+	var oauth_settings = core_settings.get( 'google' );
+	passport.use( new GoogleStrategy( {
+			clientID: oauth_settings.key,
+			clientSecret: oauth_settings.secret,
+			callbackURL: process.env.SITE_URL + 'login/return',
+		},
+		function( accessToken, refreshToken, profile, done )
+		{
+			done( null, new User( app, profile ) );
+		}) );
 
 	passport.serializeUser( function( user, done )
 	{
-		done( null, user.email );
+		done( null, { displayName: user.displayName, email: user.email } );
 	});
 	passport.deserializeUser( function( id, done )
 	{
@@ -52,8 +55,8 @@ function setup( app )
 		res.redirect( path );
 	}
 	
-	app.get( '/login', passport.authenticate( 'google-openidconnect' ) );
-	app.get( '/login/return', passport.authenticate( 'google-openidconnect' ), returnFromGoogle );
+	app.get( '/login', passport.authenticate( 'google', { scope: 'email' } ) );
+	app.get( '/login/return', passport.authenticate( 'google' ), returnFromGoogle );
 	app.get( '/logout', function( req, res, next )
 	{
 		req.logout();
@@ -76,10 +79,11 @@ function setup( app )
 }
 
 // User objects
-function User( app, email )
+function User( app, profile )
 {
 	this.app = app;
-	this.email = email;
+	this.displayName = profile.displayName;
+	this.email = profile.email || profile.emails[0].value;
 	this.can = {};
 	
 	// Fill out the permissions
