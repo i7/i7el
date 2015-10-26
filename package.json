@@ -10,7 +10,7 @@
     "express": "^4.12.4",
     "express-session": "^1.10.3",
     "lodash": "^3.9.3",
-    "multer": "^0.1.8",
+    "multer": "^1.1.0",
     "nunjucks": "^2.1.0",
     "nunjucks-date-filter": "^0.1.1",
     "passport": "^0.3.0",

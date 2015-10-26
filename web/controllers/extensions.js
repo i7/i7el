@@ -10,19 +10,27 @@ var db = require( '../../db' );
 var routes = require( '../routes.js' );
 var util = require( '../util.js' );
 
-var multerparser = multer({
-	limits: {
-		files: 1,
-		fileSize: 512 * 1024,
-	},
-	inMemory: true,
-	putSingleFilesInArray: true,
-});
-
 var requireAdminPermissions = util.requirePermission( 'admin' );
 var requireCreatePermissions = util.requirePermission( 'create' );
 var requireEditThisPermissions = util.requirePermission( 'editthis' );
 var showalert = util.showalert;
+		
+var multerparser = multer({
+	storage: multer.memoryStorage(),
+	limits: {
+		files: 1,
+		fileSize: 512 * 1024,
+	},
+});
+
+function multer_error( err, req, res, next )
+{
+	if ( err.code == 'LIMIT_FILE_SIZE' )
+	{
+		return res.status( 400 ).render( 'extensions-new', { error: 'Upload too big; maximum file size is 512kB' } );
+	}
+	next( err );
+}
 
 module.exports = function( router )
 {
@@ -94,7 +102,7 @@ routes.routemulti( router, 'extensions', [
 	} 
 ] ],
 	
-[ 'post', 'new', [ requireCreatePermissions, multerparser, function create( req, res )
+[ 'post', 'new', [ requireCreatePermissions, multerparser.single( 'file' ), multer_error, function create( req, res )
 	{
 		var user = req.user;
 		
@@ -103,13 +111,13 @@ routes.routemulti( router, 'extensions', [
 			res.status( 400 ).render( 'extensions-new', { error: msg } );
 		}
 		
-		if ( !req.files || !req.files.file || !req.files.file.length )
+		if ( !req.file )
 		{
 			return creation_error( 'No file selected' );
 		}
 		
 		// Check for a valid extension
-		var data = req.files.file[0].buffer.toString();
+		var data = req.file.buffer.toString();
 		var titleline = data.match( /^.*$/m )[0];
 		
 		if ( !/.+ by .+ begins here/i.test( titleline ) )
