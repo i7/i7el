@@ -11,13 +11,12 @@ https://github.com/i7/i7el
 
 console.log( 'i7el: Starting up' );
 var db = require( './db' );
-var web = require( './web' );
-
-var app = web.app;
-
-web.util.updatesettings()
+db.setup()
 	.then( function()
 	{
+		var web = require( './web' );
+		var app = web.app;
+
 		// Start the server!
 		var server = app.listen( app.get( 'port' ), function()
 		{

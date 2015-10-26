@@ -10,13 +10,15 @@ var util = require( '../util.js' );
 var requireadmin = util.requirePermission( 'admin' );
 var showalert = util.showalert;
 
+var core_settings = db.core_settings;
+
 function preparevars( req )
 {
-	var settings = req.app.locals.settings;
 	return {
-		admins: settings.admins.join( '\n' ),
-		editors: settings.editors.join( '\n' ),
-		releases: settings.releases.join( '\n' ),
+		admins: core_settings.get( 'admins' ).join( '\n' ),
+		editors: core_settings.get( 'editors' ).join( '\n' ),
+		releases: core_settings.get( 'releases' ).join( '\n' ),
+		settings: core_settings,
 		current: 'settings',
 	};
 }
@@ -28,11 +30,7 @@ routes.routemulti( router, 'admin', [
 
 [ 'get', '', [ requireadmin, function index( req, res )
 	{
-		util.updatesettings()
-			.then( function()
-			{
-				res.render( 'admin-settings', preparevars( req ) );
-			});
+		res.render( 'admin-settings', preparevars( req ) );
 	}
 ] ],
 	
@@ -42,23 +40,19 @@ routes.routemulti( router, 'admin', [
 		{
 			return _( data || '' ).split( '\r\n' ).map( _.trim ).filter().sort().value();
 		}
-	
-		var settings = req.app.locals.settings;
-		settings.admins = normifyresults( req.body.admins );
-		settings.editors = normifyresults( req.body.editors );
-		settings.releases = normifyresults( req.body.releases ).reverse();
 		
-		db.Setting.findOne({ where: { key: 'core' } })
-			.then( function( result )
-			{
-				return result.update({ value: JSON.stringify( settings ) });
-			})
-			.then( function()
-			{
-				var templatevars = preparevars( req );
-				templatevars.saved = 1;
-				res.render( 'admin-settings', templatevars );
-			});
+		core_settings.set( 'admins', normifyresults( req.body.admins ) );
+		core_settings.set( 'editors', normifyresults( req.body.editors ) );
+		core_settings.set( 'releases', normifyresults( req.body.releases ).reverse() );
+		core_settings.set( 'sessionsecret', req.body.sessionsecret );
+		core_settings.set( 'google', {
+			key: req.body.googlekey,
+			secret: req.body.googlesecret,
+		});
+		
+		var templatevars = preparevars( req );
+		templatevars.saved = 1;
+		res.render( 'admin-settings', templatevars );
 	}
 ] ],
 

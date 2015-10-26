@@ -1,7 +1,5 @@
 // Route definitions
 
-var db = require( '../db' );
-
 function addroutes( app, router )
 {
 	// Index and search

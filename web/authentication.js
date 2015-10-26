@@ -6,14 +6,18 @@ var passport = require( 'passport' );
 var session = require( 'express-session' );
 var FileStore = require( 'session-file-store' )( session );
 
+var db = require( '../db' );
+var core_settings;
+
 function setup( app )
 {
+	core_settings = db.core_settings;
 
 	// Sessions
 	app.use( session({
 		resave: false,
 		saveUninitialized: false,
-		secret: process.env.APP_SECRET,
+		secret: core_settings.get( 'sessionsecret' ),
 		store: new FileStore({
 			path: './.sessions',
 		}),
@@ -89,7 +93,7 @@ function User( app, email )
 User.prototype.testpermission = function( action )
 {
 	// Admins can do all
-	if ( _.includes( this.app.locals.settings.admins, this.email ) )
+	if ( _.includes( core_settings.get( 'admins' ), this.email ) )
 	{
 		return 1;
 	}
@@ -97,7 +101,7 @@ User.prototype.testpermission = function( action )
 	// Should add a ban list...
 	
 	// For now only editors can create new extensions
-	if ( _.includes( this.app.locals.settings.editors, this.email ) )
+	if ( _.includes( core_settings.get( 'editors' ), this.email ) )
 	{
 		if ( [ 'create', 'editany', 'editthis' ].indexOf( action ) >= 0 )
 		{
