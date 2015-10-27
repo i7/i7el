@@ -217,7 +217,6 @@ routes.routemulti( router, 'extensions', [
 								type: 'Success',
 								msg: extcreated ? 'Extension uploaded' : 'Extension version uploaded',
 							};
-							//req.session.showdialog = 1;
 							res.redirect( '/extensions/' + slug );
 						}
 					});
@@ -238,15 +237,7 @@ routes.routemulti( router, 'extensions', [
 		{
 			data.userext = req.session.extensions[ ext.slug ];
 		}
-		/*// Show the I7 releases dialog when first creating an extension
-		if ( !req.session.showdialog )
-		{
-			data.showdialog = 1;
-			data.js = {
-				i7releases: req.app.locals.settings.releases,
-			};
-			delete req.session.showdialog;
-		}*/
+		req.session.returnFromVersionEdit = req.path;
 		res.render( 'extensions-show', data );
 	}
 ] ],

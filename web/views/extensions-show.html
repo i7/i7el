@@ -24,7 +24,12 @@
 	</small></h1>
 </div>
 {{ macros.alert( alert, 'col-md-12' ) }}
-{% if user.can.editthis and not current.i7releases %}{{ macros.alert( { type: 'Warning', msg: 'No Inform 7 releases have been specified' }, 'col-md-12' ) }}{% endif %}
+{% if user.can.editthis and not current.i7releases %}
+	<div class="alert alert-warning col-md-12" role="alert">
+		<p><strong>Warning:</strong> No Inform 7 releases selected! Users will not be able to download this version of the extension from within Inform 7.
+		<p><a href="/extensions/{{ slug }}/versions/{{ current.version }}/edit" class="alert-link">Specify compatible releases for version {{ current.version }} now.</a>
+	</div>
+{% endif %}
 <div class="col-md-4">
 	<h2>Versions</h2>
 	{% if pl -%}
