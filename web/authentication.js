@@ -17,6 +17,7 @@ function setup( app )
 	app.use( session({
 		resave: false,
 		saveUninitialized: false,
+		cookie: { secure: 'auto' },
 		secret: core_settings.get( 'sessionsecret' ),
 		store: new FileStore({
 			path: './.sessions',

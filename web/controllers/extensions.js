@@ -61,7 +61,7 @@ router.param( 'slug', function( req, res, next, slug )
 				title: result.title,
 				author: result.author,
 				data: result.data,
-				i7releases: req.app.locals.settings.releases,
+				i7releases: db.core_settings.get( 'releases' ),
 			});
 			next();
 		});
