@@ -20,7 +20,7 @@ routes.routemulti( router, null, [
 		
 		// The main query
 		var exts = Extension.findAndCountAll({
-			order: [[ 'updatedAt', 'DESC' ]],
+			order: [[ db.Sequelize.json( "data#>'{current,createdAt}'" ), 'DESC' ]],
 			limit: 10,
 		});
 		
@@ -48,7 +48,7 @@ routes.routemulti( router, null, [
 		Extension.aggregate( 'author', 'count', {
 			attributes: [ 'author' ],
 			group: 'author',
-			order: 'count DESC',
+			order: [ ['count', 'DESC'], ['author', 'ASC'] ],
 			plain: false,
 		})
 			.then( function( results )
