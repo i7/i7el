@@ -85,8 +85,13 @@ module.exports = function( sequelize, DataTypes )
 			{
 				if ( !this.description )
 				{
-					var lines = current.code.split( /\r?\n/g ).slice( 2 );
+					var lines = current.code.split( /\r?\n/g ).slice( 1 );
 					var description = '';
+					// While the extension format is supposed to have one blank line followed by a rubric, support having any number of blank lines
+					while ( _.trim( lines[0] ) == '' )
+					{
+						lines.shift();
+					}
 					if ( /^\s*"/.test( lines[0] ) )
 					{
 						// Handle multi-line rubrics
