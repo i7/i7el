@@ -1,0 +1,12 @@
+{% extends 'layout.html' %}
+{% import 'macros.html' as macros %}
+
+{% block content %}
+<h1>Extension authors</h1>
+{% for author in authors %}
+	<div class="col-md-2">
+		<h3><a href="/extensions?search={{ author.author }}" title="Search for extensions by {{ author.author }}">{{ author.author }}</a></h3>
+		<p>{{ author.count }} extension{% if author.count > 1 %}s{% endif %}</p>
+	</div>
+{% endfor %}
+{% endblock %}

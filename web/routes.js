@@ -2,7 +2,7 @@
 
 function addroutes( app, router )
 {
-	// Index and search
+	require( './controllers/indexes.js' )( router );
 	require( './controllers/search.js' )( router );
 	require( './controllers/admin.js' )( router );
 	require( './controllers/extensions.js' )( router );

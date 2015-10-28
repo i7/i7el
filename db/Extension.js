@@ -33,6 +33,19 @@ module.exports = function( sequelize, DataTypes )
 		// categories/tags
 	}, {
 		defaultScope: {},
+		scopes: {
+			pl: { where: { approved: true } },
+		},
+		classMethods: {
+			pl_scope: function( req )
+			{
+				if ( req.session.pl )
+				{
+					return this.scope( 'defaultScope', 'pl' );
+				}
+				return this;
+			},
+		},
 		instanceMethods: {
 			// Update the cached version data, returns a promise
 			updateData: function( options )
