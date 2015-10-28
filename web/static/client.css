@@ -87,6 +87,19 @@ h1 small
 	width: 36px;
 }
 
+ol.indexlist
+{
+    padding:0
+}
+
+ol.indexlist li
+{
+	display: inline-block;
+	padding: 0 10px;
+	vertical-align: top;
+	width: 16.66666667%;
+}
+
 .outdated
 {
 	display: inline-block;
