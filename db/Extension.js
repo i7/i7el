@@ -95,7 +95,7 @@ module.exports = function( sequelize, DataTypes )
 					if ( /^\s*"/.test( lines[0] ) )
 					{
 						// Handle multi-line rubrics
-						while ( !/"\s*$/.test( description ) )
+						while ( !/"\.?\s*$/.test( description ) )
 						{
 							description += lines.shift() + ' ';
 						}
