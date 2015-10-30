@@ -7,9 +7,9 @@
 </div>
 <div class="col-md-4">
 	<h2>Library statistics</h2>
-	<ul>
-		<li>{{ extensions.count }} extensions</li>
-		<li><a href="/authors">{{ stats.authors }} authors</a></li>
+	<ul class="nav nav-pills nav-stacked">
+		<li><span class="stats">{{ macros.icon( 'file-text-o fa-fw' ) }} {{ extensions.count }} extensions</span></li>
+		<li><a class="stats" href="/authors">{{ macros.icon( 'users fa-fw' ) }} {{ stats.authors }} authors</a></li>
 	</ul>
 	<h2>Actions</h2>
 	<div class="list-group">
@@ -24,6 +24,7 @@
 		{% else %}
 			<a class="list-group-item" href="/login">{{ macros.icon( 'sign-in fa-fw' ) }} Sign in with Google</a>
 		{% endif %}
+		<a class="list-group-item" href="/about">{{ macros.icon( 'info fa-fw' ) }} About the Library</a>
 	</div>
 </div>
 <div class="col-md-8">

@@ -1,0 +1,17 @@
+{% extends 'layout.html' %}
+
+{% block title %}About - {% endblock %}
+
+{% block content %}
+<div class="col-md-8 col-md-offset-2">
+	<h1>About the Inform 7 Extensions Library</h1>
+	<p>Before the Extensions Library was created the state of extensions was very messy. Inform authors had to check at least three websites for extensions, and it wasn't clear where the latest version was, or which Inform 7 releases an extension was compatible with. Inspired by the excellent <a href="https://www.npmjs.com/">npm site for Javascript</a> we made the Library with the eventual goal that it will be a one-stop shop for every Inform 7 extension.
+	<h2>Using the Library from within the Inform 7 IDE</h2>
+	<p>The Library is designed to work within the Inform 7 IDE, with a few small changes, such as the download button turning into an install button. The Library will automatically show you the latest version of each extension which is compatible with the Inform 7 release you are using, if any versions are compatible. You can view all the versions with the {{ macros.icon( 'history' ) }} history link.
+	<p>When the Library is used from within the IDE, only extensions which have been manually approved by the Library Manager will be visible and searchable. These extensions will be shown with the {{ macros.icon( 'check-circle text-success' ) }} tick of approval when the Library is used in a web browser.
+	<h2>Privacy</h2>
+	<p>Storing passwords securely is difficult, so this site uses <a href="https://developers.google.com/identity/">Google OAuth 2.0</a> to authenticate users. The only information we store are email addresses and display names, which are shown only to the site administrators, editors, and an extensions' co-maintainers. We will never distribute your details to third parties.
+	<h2>Copyright, licensing, and software development</h2>
+	<p>All extensions, their descriptions and documentation are licensed under the <a rel="license" href="http://creativecommons.org/licenses/by/4.0/">CC BY 4.0 licence</a>. The <a href="https://github.com/i7/i7el">site software</a> is licensed under the MIT licence. Please report bugs and feature suggestions to the <a href="https://github.com/i7/i7el/issues">GitHub issue tracker</a>.</p>
+</div>
+{% endblock %}

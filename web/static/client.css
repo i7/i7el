@@ -66,6 +66,12 @@ h1 small
 	font-size: 0.8em;
 }
 
+.nav .stats
+{
+	display: block;
+	padding: 5px 15px;
+}
+
 .media-ext
 {
 	padding-top: 3px;

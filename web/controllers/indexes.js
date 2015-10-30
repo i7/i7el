@@ -56,6 +56,13 @@ routes.routemulti( router, null, [
 	}
 ] ],
 
+// About
+[ 'get', 'about', [ function about( req, res )
+	{
+		res.render( 'about', {} );
+	}
+] ],
+
 ] );
 
 };
