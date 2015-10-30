@@ -1,5 +1,6 @@
 // Connect to and initiate the database
 
+var _ = require( 'lodash' );
 var Sequelize = require( 'sequelize' );
 var hooks = require( './hooks.js' );
 
@@ -64,12 +65,12 @@ function SettingsProxy( instance )
 SettingsProxy.prototype = {
 	get: function( name )
 	{
-		return this.data[ name ];
+		return _.cloneDeep( this.data[ name ] );
 	},
 	set: function( name, value )
 	{
 		var self = this;
-		this.data[ name ] = value;
+		this.data[ name ] = _.cloneDeep( value );
 		if ( !this.saving )
 		{
 			this.saving = 1;

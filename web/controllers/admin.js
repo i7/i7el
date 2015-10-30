@@ -44,6 +44,7 @@ routes.routemulti( router, 'admin', [
 		core_settings.set( 'admins', normifyresults( req.body.admins ) );
 		core_settings.set( 'editors', normifyresults( req.body.editors ) );
 		core_settings.set( 'releases', normifyresults( req.body.releases ).reverse() );
+		core_settings.set( 'upload_limit', req.body.upload_limit );
 		core_settings.set( 'sessionsecret', req.body.sessionsecret );
 		core_settings.set( 'google', {
 			key: req.body.googlekey,

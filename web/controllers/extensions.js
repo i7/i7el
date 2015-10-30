@@ -10,6 +10,8 @@ var db = require( '../../db' );
 var routes = require( '../routes.js' );
 var util = require( '../util.js' );
 
+var core_settings = db.core_settings;
+
 var requireAdminPermissions = util.requirePermission( 'admin' );
 var requireCreatePermissions = util.requirePermission( 'create' );
 var requireEditThisPermissions = util.requirePermission( 'editthis' );
@@ -19,7 +21,7 @@ var multerparser = multer({
 	storage: multer.memoryStorage(),
 	limits: {
 		files: 1,
-		fileSize: 512 * 1024,
+		fileSize: core_settings.get( 'upload_limit' ) * 1000,
 	},
 });
 
@@ -27,7 +29,7 @@ function multer_error( err, req, res, next )
 {
 	if ( err.code == 'LIMIT_FILE_SIZE' )
 	{
-		return res.status( 400 ).render( 'extensions-new', { error: 'Upload too big; maximum file size is 512kB' } );
+		return res.status( 400 ).render( 'extensions-new', { error: 'Upload too big; maximum file size is ' + core_settings.get( 'upload_limit' ) + 'kB' } );
 	}
 	next( err );
 }
@@ -61,7 +63,7 @@ router.param( 'slug', function( req, res, next, slug )
 				title: result.title,
 				author: result.author,
 				data: result.data,
-				i7releases: db.core_settings.get( 'releases' ),
+				i7releases: core_settings.get( 'releases' ),
 			});
 			next();
 		});

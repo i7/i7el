@@ -24,6 +24,16 @@ Admin Settings -
 		<label for="releases">Inform 7 releases</label> (one per line)
 		<textarea class="form-control" rows="8" name="releases" id="releases">{{ releases }}</textarea>
 	</div>
+	<div class="form-group">
+		<label for="upload_limit">Filesize upload limit</label>
+		<div class="form-inline">
+			<div class="input-group">
+				<span class="input-group-addon">{{ macros.icon( 'upload fa-fw' ) }}</span>
+				<input type="text" class="form-control" name="upload_limit" id="upload_limit" value="{{ settings.get( 'upload_limit' ) }}">
+				<span class="input-group-addon">kB</span>
+			</div>
+		</div>
+	</div>
 	<h2>User authentication settings</h2>
 	<div class="form-group">
 		<label for="sessionsecret">Session secret</label>
