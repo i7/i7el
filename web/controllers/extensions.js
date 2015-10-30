@@ -21,6 +21,7 @@ var multerparser = multer({
 	storage: multer.memoryStorage(),
 	limits: {
 		files: 1,
+		// Note, will not be updated if the setting is change - the server will need to be restarted
 		fileSize: core_settings.get( 'upload_limit' ) * 1000,
 	},
 });

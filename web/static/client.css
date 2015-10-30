@@ -89,15 +89,14 @@ h1 small
 
 ol.indexlist
 {
-    padding:0
+    padding: 0;
 }
 
 ol.indexlist li
 {
 	display: inline-block;
-	padding: 0 10px;
+	float: none;
 	vertical-align: top;
-	width: 16.66666667%;
 }
 
 .outdated

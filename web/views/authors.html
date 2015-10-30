@@ -5,7 +5,7 @@
 <h1>Extension authors</h1>
 <ol class="indexlist">
 	{% for author in authors %}
-		<li>
+		<li class="col-md-2 col-sm-3 col-xs-6">
 			<h3><a href="/extensions?search={{ author.author }}" title="Search for extensions by {{ author.author }}">{{ author.author }}</a></h3>
 			<p>{{ author.count }} extension{% if author.count > 1 %}s{% endif %}</p>
 	{% endfor %}

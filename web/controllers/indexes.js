@@ -1,7 +1,5 @@
 // Indexes
 
-var _ = require( 'lodash' );
-
 var db = require( '../../db' );
 var routes = require( '../routes.js' );
 var util = require( '../util.js' );
@@ -48,7 +46,7 @@ routes.routemulti( router, null, [
 		Extension.aggregate( 'author', 'count', {
 			attributes: [ 'author' ],
 			group: 'author',
-			order: [ ['count', 'DESC'], ['author', 'ASC'] ],
+			order: [[ 'author', 'ASC' ]],
 			plain: false,
 		})
 			.then( function( results )
