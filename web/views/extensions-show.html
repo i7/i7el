@@ -90,6 +90,12 @@
 <div class="col-md-8">
 	<h2>Description</h2>
 	<p>{% if description %}{{ description }}{% else %}<i>No description provided</i>{% endif %}</p>
+	{% if tags.length %}
+		<p>{{ macros.icon( 'tags', 'Tags' ) }}
+		{% for tag in tags %}
+			<span class="label label-default">{{ tag }}</span>
+		{% endfor %}
+	{% endif %}
 	<h2>Documentation</h2>
 	<p style="white-space: pre-wrap;">{% if documentation %}{{ documentation }}{% else %}<i>No documentation provided</i>{% endif %}</p>
 </div>

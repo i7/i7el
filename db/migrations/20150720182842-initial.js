@@ -62,8 +62,11 @@ module.exports = {
 					uploader: DataTypes.TEXT,
 					ExtensionId: {
 						type: DataTypes.INTEGER,
-						references: "Extensions",
-						referencesKey: "id",
+						references: {
+							model: "Extensions",
+							key: "id",
+						},
+						onDelete: 'CASCADE',
 					},
 				});
 			});

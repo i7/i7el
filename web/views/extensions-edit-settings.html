@@ -1,5 +1,30 @@
 {% extends 'extensions-edit-layout.html' %}
-{% import 'macros.html' as macros %}
+
+{% block head %}
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-tagsinput/0.5.0/bootstrap-tagsinput.min.css">
+<script src="https://typeahead.js.org/releases/0.11.1/typeahead.bundle.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-tagsinput/0.5.0/bootstrap-tagsinput.min.js"></script>
+<script>
+$(function(){
+	var tags = new Bloodhound({
+		datumTokenizer: Bloodhound.tokenizers.whitespace,
+		queryTokenizer: Bloodhound.tokenizers.whitespace,
+		prefetch: {
+			url: '/tags.json',
+			cache: false,
+		}
+	});
+	tags.initialize();
+
+	$( '#tags' ).tagsinput({
+		confirmKeys: [13, 32, 44],
+		maxChars: 35,
+		trimValue: true,
+		typeahead: tags.ttAdapter(),
+	});
+});
+</script>
+{% endblock %}
 
 {% block title %}
 {{ title }} by {{ author }}: settings - 
@@ -12,6 +37,13 @@
 	<div class="form-group">
 		<label for="description">Description</label> (A short description, no more than three sentences is recommended)
 		<textarea class="form-control" rows="3" name="description" id="description">{{ description }}</textarea>
+	</div>
+	<div class="form-group">
+		<label for="tags">Tags</label>
+		<div class="input-group">
+			<span class="input-group-addon">{{ macros.icon( 'tags fa-fw' ) }}</span>
+			<input type="text" class="form-control" name="tags" id="tags" value="{{ tags }}">
+		</div>
 	</div>
 	<div class="form-group">
 		<label for="website">Website</label>

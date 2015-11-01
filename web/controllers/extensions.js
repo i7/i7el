@@ -16,12 +16,12 @@ var requireAdminPermissions = util.requirePermission( 'admin' );
 var requireCreatePermissions = util.requirePermission( 'create' );
 var requireEditThisPermissions = util.requirePermission( 'editthis' );
 var showalert = util.showalert;
-		
+
 var multerparser = multer({
 	storage: multer.memoryStorage(),
 	limits: {
 		files: 1,
-		// Note, will not be updated if the setting is change - the server will need to be restarted
+		// Note, will not be updated if the setting is changed - the server will need to be restarted
 		fileSize: core_settings.get( 'upload_limit' ) * 1000,
 	},
 });
@@ -46,8 +46,20 @@ router.param( 'slug', function( req, res, next, slug )
 	{
 		return res.status( 400 ).render( 'error', { msg: 'Invalid extension URL' } );
 	}
+	
+	var path = req.route.path,
+	query = { where: { slug: slug } },
+	includeTags = 0;
+	
+	// Include the tags when required
+	if ( /:slug(\/edit)?$/.test( path ) )
+	{
+		query.include = [ db.Tag ];
+		includeTags = 1;
+	}
+	
 	// Find this extension
-	db.Extension.findOne({ where: { slug: slug } })
+	db.Extension.findOne( query )
 		.then( function ( result )
 		{
 			if ( !result )
@@ -58,6 +70,10 @@ router.param( 'slug', function( req, res, next, slug )
 			if ( req.user )
 			{
 				req.user.can.editthis = result.maintainer == req.user.email || req.user.can.editany;
+			}
+			if ( includeTags )
+			{
+				result.sortedTags = _( result.Tags ).map( function( tag ) { return tag.tag; } ).sort().value();
 			}
 			_.extend( res.locals, {
 				slug: slug,
@@ -235,6 +251,7 @@ routes.routemulti( router, 'extensions', [
 			approved: ext.approved,
 			description: ext.description || '',
 			documentation: ext.documentation || '',
+			tags: ext.sortedTags,
 		};
 		if ( req.session.extensions )
 		{
@@ -273,6 +290,7 @@ routes.routemulti( router, 'extensions', [
 		// Show the settings page
 		var data = {
 			description: ext.description || '',
+			tags: ext.sortedTags,
 			current: 'settings'
 		};
 		res.render( 'extensions-edit-settings', data );
@@ -295,7 +313,29 @@ routes.routemulti( router, 'extensions', [
 		saveurl( 'discussion' );
 		saveurl( 'bugs' );
 		ext.changed( 'data', true );
-		ext.save()
+		var promises = [ ext.save() ];
+		
+		// Handle tags
+		var tags = _( req.body.tags.toLowerCase() ).split( ',' ).map( _.trim ).value();
+		var oldtags = _.map( ext.Tags, function( tag ) { return tag.tag; } );
+		var newtags = _( tags ).filter( function( tag ) { return oldtags.indexOf( tag ) === -1; } )
+			.map( function( tag ) { return { ExtensionId: ext.id, tag: tag }; } ).value();
+		
+		// Remove old tags we don't want anymore
+		promises.push( db.Tag.destroy({
+			where: {
+				ExtensionId: ext.id,
+				tag: { $notIn: tags },
+			},
+		}) );
+		
+		// Create new tags
+		if ( newtags.length )
+		{
+			promises.push( db.Tag.bulkCreate( newtags ) );
+		}
+		
+		Promise.all( promises )
 			.then( function()
 			{
 				req.session.alert = {

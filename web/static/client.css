@@ -110,6 +110,13 @@ ol.indexlist li
 	padding: 9.5px 0;
 }
 
+div.bootstrap-tagsinput
+{
+	border-top-left-radius: 0px;
+	border-bottom-left-radius: 0px;
+	width: 100%;
+}
+
 .outdated
 {
 	display: inline-block;

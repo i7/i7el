@@ -56,6 +56,29 @@ routes.routemulti( router, null, [
 	}
 ] ],
 
+// Tags
+[ 'get', /tags(\.json)?$/, [ function tags( req, res )
+	{
+		// TODO: can we add pl scoping to tags?
+		
+		db.Tag.aggregate( 'tag', 'count', {
+			attributes: [ 'tag' ],
+			group: 'tag',
+			order: [[ 'count', 'DESC' ]],
+			plain: false,
+		})
+			.then( function( results )
+			{
+				if ( req.params[0] == '.json' )
+				{
+					res.set( 'Cache-Control', 'max-age=600' );
+					return res.json( results );
+				}
+				res.render( 'tags', { tags: results });
+			});
+	}
+] ],
+
 // About
 [ 'get', 'about', [ function about( req, res )
 	{

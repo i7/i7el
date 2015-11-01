@@ -1,5 +1,7 @@
 // Route definitions
 
+var _ = require( 'lodash' );
+
 function addroutes( app, router )
 {
 	require( './controllers/indexes.js' )( router );
@@ -25,7 +27,9 @@ function routemulti( router, prefix, routes )
 	routes.forEach( function( route )
 	{
 		// route = [ method, path, [func(s)] ]
-		var path = ( prefix ? '/' + prefix : '' ) + ( route[1] ? '/' + route[1] : '' );
+		var path = _.isRegExp( route[1] ) ?
+			route[1] :
+			( prefix ? '/' + prefix : '' ) + ( route[1] ? '/' + route[1] : '' );
 		router[ route[0] ]( path, route[2] );
 	});
 }

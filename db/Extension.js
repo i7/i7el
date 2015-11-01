@@ -30,7 +30,6 @@ module.exports = function( sequelize, DataTypes )
 		// Description and documentation in Markdown
 		description: DataTypes.TEXT,
 		documentation: DataTypes.TEXT,
-		// categories/tags
 	}, {
 		defaultScope: {},
 		scopes: {
