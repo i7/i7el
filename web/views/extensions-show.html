@@ -11,7 +11,7 @@
 {% block content %}
 <div class="col-md-12">
 	<h1>{{ title }} by {{ author }} <small>
-		<a href="/extensions?search={{ author }}" title="Search for other extensions by this author">{{ macros.icon( 'user', 'Search for other extensions by this author' ) }}</a>
+		<a href="/extensions?search=author:%22{{ author }}%22" title="Search for other extensions by this author">{{ macros.icon( 'user', 'Search for other extensions by this author' ) }}</a>
 		{% if user and user.can.editany -%}
 			{%- if approved -%}
 				<a class="text-success" href="/extensions/{{ slug }}/edit/?approved=0" title="Approved for the Public Library; click to reject">{{ macros.icon( 'check-circle', 'Approved for the Public Library; click to reject' ) }}</a>

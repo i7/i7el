@@ -1,7 +1,7 @@
 // Searches
 
 var _ = require( 'lodash' );
-var tokenizer = require('search-text-tokenizer');
+var tokenizer = require( '@curiousdannii/search-text-tokenizer' );
 
 var db = require( '../../db' );
 var routes = require( '../routes.js' );
@@ -23,10 +23,19 @@ routes.routemulti( router, null, [
 			return res.render( 'search-help', {} );
 		}
 		
-		data.query = terms;
+		data.searchquery = terms;
 		
 		tokens = _.map( tokenizer( terms ), function( term )
 		{
+			// Support tagged terms
+			if ( term.tag === 'title' )
+			{
+				return { title: { $iLike: '%' + term + '%' } };
+			}
+			if ( term.tag === 'author' )
+			{
+				return { author: { $iLike: '%' + term + '%' } };
+			}
 			return { $or: [
 				{ title: { $iLike: '%' + term + '%' } },
 				{ author: { $iLike: '%' + term + '%' } },
@@ -37,6 +46,7 @@ routes.routemulti( router, null, [
 		
 		Extension.findAll({
 			where: { $and: tokens },
+			order: [[ 'title', 'ASC' ]],
 		})
 			.then( function( results )
 			{

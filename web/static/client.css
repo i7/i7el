@@ -105,6 +105,11 @@ ol.indexlist li
 	vertical-align: top;
 }
 
+.searchexamples dt
+{
+	padding: 9.5px 0;
+}
+
 .outdated
 {
 	display: inline-block;

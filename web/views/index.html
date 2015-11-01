@@ -13,6 +13,7 @@
 	</ul>
 	<h2>Actions</h2>
 	<div class="list-group">
+		<a class="list-group-item" href="/about">{{ macros.icon( 'info fa-fw' ) }} About the Library</a>
 		{% if user %}
 			{% if user.can.create %}
 				<a class="list-group-item" href="/extensions/new">{{ macros.icon( 'upload fa-fw' ) }} Upload new extension</a>
@@ -24,7 +25,6 @@
 		{% else %}
 			<a class="list-group-item" href="/login">{{ macros.icon( 'sign-in fa-fw' ) }} Sign in with Google</a>
 		{% endif %}
-		<a class="list-group-item" href="/about">{{ macros.icon( 'info fa-fw' ) }} About the Library</a>
 	</div>
 </div>
 <div class="col-md-8">

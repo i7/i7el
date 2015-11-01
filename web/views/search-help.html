@@ -1,8 +1,24 @@
 {% extends 'layout.html' %}
 
+{% block title %}Searching - {% endblock %}
+
 {% block content %}
 <div class="col-md-8 col-md-offset-2">
+	{{ macros.searchbox( searchquery ) }}
 	<h1>Searching The Inform 7 Extensions Library</h1>
 	<p>You can search the Library much like you would any other search engine. Results will be limited to those extensions which match every search term you give.</p>
+	<h2>Search options</h2>
+	<p>In addition to general keyword searches, you can search for extensions which match particular information through using these tags:</p>
+	<dl class="dl-horizontal searchexamples">
+		<dt>title:</dt>
+		<dd><pre>title:glulx
+title:"glulx text effects"</pre></dd>
+		<dt>author:</dt>
+		<dd><pre>author:emily
+author:"Emily Short"</pre></dd>
+	</dl>
+	<p>These tagged terms can be combined with each other and with regular terms:</p>
+	<p><pre>title:vorple images
+title:glulx author:emily</pre></p>
 </div>
 {% endblock %}
