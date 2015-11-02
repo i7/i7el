@@ -25,13 +25,22 @@ routes.routemulti( router, null, [
 		// Stats
 		var authors = Extension.aggregate( 'author', 'count', { distinct: true } );
 		
-		Promise.all( [ exts, authors ] )
+		var tags = db.Tag.aggregate( 'tag', 'count', {
+			attributes: [ 'tag' ],
+			group: 'tag',
+			order: [ ['count', 'DESC'], ['tag', 'ASC'] ],
+			plain: false,
+			limit: 12,
+		});
+		
+		Promise.all( [ exts, authors, tags ] )
 			.then( function( results )
 			{
 				res.render( 'index', {
 					extensions: results[0],
 					stats: {
 						authors: results[1],
+						tags: results[2],
 					},
 				});
 			});
@@ -64,14 +73,15 @@ routes.routemulti( router, null, [
 		db.Tag.aggregate( 'tag', 'count', {
 			attributes: [ 'tag' ],
 			group: 'tag',
-			order: [[ 'count', 'DESC' ]],
+			order: [ ['count', 'DESC'], ['tag', 'ASC'] ],
 			plain: false,
 		})
 			.then( function( results )
 			{
 				if ( req.params[0] == '.json' )
 				{
-					res.set( 'Cache-Control', 'max-age=600' );
+					results = results.map( function( tag ) { return tag.tag; } );
+					//res.set( 'Cache-Control', 'max-age=600' );
 					return res.json( results );
 				}
 				res.render( 'tags', { tags: results });

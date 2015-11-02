@@ -124,6 +124,11 @@ module.exports = function( sequelize, DataTypes )
 					this.documentation = _.trim( docs[1] );
 				}
 			},
+			// Return a sorted list of this extension's tags
+			sortedTags: function()
+			{
+				return this.Tags.map( function( tag ) { return tag.tag; } ).sort();
+			},
 		},
 	});
 };

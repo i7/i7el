@@ -48,14 +48,12 @@ router.param( 'slug', function( req, res, next, slug )
 	}
 	
 	var path = req.route.path,
-	query = { where: { slug: slug } },
-	includeTags = 0;
+	query = { where: { slug: slug } };
 	
 	// Include the tags when required
 	if ( /:slug(\/edit)?$/.test( path ) )
 	{
 		query.include = [ db.Tag ];
-		includeTags = 1;
 	}
 	
 	// Find this extension
@@ -70,10 +68,6 @@ router.param( 'slug', function( req, res, next, slug )
 			if ( req.user )
 			{
 				req.user.can.editthis = result.maintainer == req.user.email || req.user.can.editany;
-			}
-			if ( includeTags )
-			{
-				result.sortedTags = _( result.Tags ).map( function( tag ) { return tag.tag; } ).sort().value();
 			}
 			_.extend( res.locals, {
 				slug: slug,
@@ -251,7 +245,7 @@ routes.routemulti( router, 'extensions', [
 			approved: ext.approved,
 			description: ext.description || '',
 			documentation: ext.documentation || '',
-			tags: ext.sortedTags,
+			tags: ext.sortedTags(),
 		};
 		if ( req.session.extensions )
 		{
@@ -290,7 +284,7 @@ routes.routemulti( router, 'extensions', [
 		// Show the settings page
 		var data = {
 			description: ext.description || '',
-			tags: ext.sortedTags,
+			tags: ext.sortedTags(),
 			current: 'settings'
 		};
 		res.render( 'extensions-edit-settings', data );

@@ -1,0 +1,13 @@
+{% extends 'layout.html' %}
+{% import 'macros.html' as macros %}
+
+{% block content %}
+<h1>Extension tags</h1>
+<ol class="indexlist">
+	{% for tag in tags %}
+		<li class="col-md-2 col-sm-3 col-xs-6">
+			<h3><a href="/extensions?search=tag:{{ tag.tag }}" title="Search for extensions tagged with {{ tag.tag }}">{{ tag.tag }}</a></h3>
+			<p>{{ tag.count }} extension{% if tag.count > 1 %}s{% endif %}</p>
+	{% endfor %}
+</ol>
+{% endblock %}

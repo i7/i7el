@@ -93,7 +93,7 @@
 	{% if tags.length %}
 		<p>{{ macros.icon( 'tags', 'Tags' ) }}
 		{% for tag in tags %}
-			<span class="label label-default">{{ tag }}</span>
+			<span class="label label-primary"><a href="/extensions?search=tag:{{ tag }}" title="Search for other extensions tagged {{ tag }}">{{ tag }}</a></span>
 		{% endfor %}
 	{% endif %}
 	<h2>Documentation</h2>

@@ -72,6 +72,18 @@ h1 small
 	padding: 5px 15px;
 }
 
+.tags
+{
+	line-height: 1.7;
+	padding: 0 37px;
+}
+
+.label a
+{
+	color: #fff;
+	text-decoration: none;
+}
+
 .media-ext
 {
 	padding-top: 3px;
