@@ -1,7 +1,8 @@
 // Searches
 
 var _ = require( 'lodash' );
-var tokenizer = require( '@curiousdannii/search-text-tokenizer' );
+var speakingurl = require( 'speakingurl' );
+var tokenizer = require( 'search-text-tokenizer' );
 
 var db = require( '../../db' );
 var routes = require( '../routes.js' );
@@ -31,30 +32,38 @@ routes.routemulti( router, null, [
 		
 		_.forEach( tokenizer( terms ), function( term )
 		{
+			var likeTerm = { $iLike: '%' + term.term + '%' };
+			
 			// Support tagged terms
 			if ( term.tag === 'title' )
 			{
-				return searchterms.push( { title: { $iLike: '%' + term + '%' } } );
+				return searchterms.push( { title: likeTerm } );
 			}
 			if ( term.tag === 'author' )
 			{
-				return searchterms.push( { author: { $iLike: '%' + term + '%' } } );
+				return searchterms.push( { author: likeTerm } );
 			}
 			if ( term.tag === 'tag' )
 			{
-				return tags.push( term.valueOf() );
+				return tags.push( term.term );
 			}
 			return searchterms.push( { $or: [
-				{ title: { $iLike: '%' + term + '%' } },
-				{ author: { $iLike: '%' + term + '%' } },
-				{ description: { $iLike: '%' + term + '%' } },
-				{ documentation: { $iLike: '%' + term + '%' } },
+				{ title: likeTerm },
+				{ author: likeTerm },
+				{ description: likeTerm },
+				{ documentation: likeTerm },
 			] } );
 		});
 		
 		if ( searchterms.length )
 		{
 			query.where = { $and: searchterms };
+			
+			// If the search included 'by' then match it against the slug
+			if ( /\sby\s/i.test( terms ) )
+			{
+				query.where = { $or: [ query.where, { slug: { $iLike: '%' + speakingurl( terms ) + '%' } } ] };
+			}
 		}
 		
 		if ( tags.length )

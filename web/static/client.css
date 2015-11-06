@@ -72,15 +72,20 @@ h1 small
 	padding: 5px 15px;
 }
 
-.tags
+li.tags
 {
 	line-height: 1.7;
-	padding: 0 37px;
+	padding-left: 37px;
 }
 
-.label a
+.nav li.tags a
 {
-	color: #fff;
+	display: inline;
+	padding: 0;
+}
+
+.tags a
+{
 	text-decoration: none;
 }
 

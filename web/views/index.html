@@ -12,7 +12,7 @@
 		<li><a class="stats" href="/authors">{{ macros.icon( 'users fa-fw' ) }} {{ stats.authors }} authors</a></li>
 		<li><span class="stats">{{ macros.icon( 'tags fa-fw' ) }} Top tags:</li>
 		<li class="tags">{% for tag in stats.tags %}
-				<span class="label label-primary"><a href="/extensions?search=tag:{{ tag.tag }}" title="Search for extensions tagged {{ tag.tag }}">{{ tag.tag }}</a></span>
+				<a href="/extensions?search=tag:{{ tag.tag }}" title="Search for extensions tagged {{ tag.tag }}"><span class="label label-primary">{{ tag.tag }}</span></a>
 			{% endfor %}</li>
 		<li><a class="stats" href="/tags"><span class="fa fa-fw"></span> Browse all tags</a></li>
 	</ul>
