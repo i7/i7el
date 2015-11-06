@@ -66,14 +66,31 @@ routes.routemulti( router, null, [
 			}
 		}
 		
-		if ( tags.length )
+		// Match required tag
+		if ( tags.length == 1 )
 		{
 			query.include = [{
 				model: db.Tag,
+				attributes: [],
 				where: {
-					tag: { $in: tags },
+					tag: tags[0],
 				},
 			}];
+		}
+		// Require extensions to have associations with all specified tags
+		if ( tags.length > 1 )
+		{
+			_.assign( query, {
+				include: [{
+					model: db.Tag,
+					attributes: [],
+					where: {
+						tag: { $in: tags },
+					},
+				}],
+				group: '"Extension"."id"',
+				having: [ 'COUNT(*) = ?', tags.length ],
+			});
 		}
 		
 		query.order = [[ 'title', 'ASC' ]];
@@ -81,17 +98,6 @@ routes.routemulti( router, null, [
 		Extension.findAll( query )
 			.then( function( results )
 			{
-				// Filter results to ones which match all tags
-				if ( tags.length )
-				{
-					results = _.filter( results, function( ext )
-					{
-						return _.every( tags, function( tag )
-						{
-							return ext.sortedTags().indexOf( tag ) > -1;
-						});
-					});
-				}
 				data.results = results;
 				return res.render( 'search-results', data );
 			});
