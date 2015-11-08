@@ -6,6 +6,28 @@ var util = require( '../util.js' );
 
 var showalert = util.showalert;
 
+// Get a list of tags by number of extensions, filtering for approval if needed
+function tags_query( req )
+{
+	var query = {
+		attributes: [ 'tag', [ db.Sequelize.fn( 'count', db.Sequelize.col( 'tag' ) ), 'count' ] ],
+		group: 'tag',
+		order: [ ['count', 'DESC'], ['tag', 'ASC'] ],
+		raw: true,
+	};
+	if ( req.session.pl )
+	{
+		query.include = [{
+			model: db.Extension,
+			attributes: [],
+			where: {
+				approved: true,
+			},
+		}];
+	}
+	return query;
+}
+
 module.exports = function( router )
 {
 
@@ -25,13 +47,9 @@ routes.routemulti( router, null, [
 		// Stats
 		var authors = Extension.aggregate( 'author', 'count', { distinct: true } );
 		
-		var tags = db.Tag.aggregate( 'tag', 'count', {
-			attributes: [ 'tag' ],
-			group: 'tag',
-			order: [ ['count', 'DESC'], ['tag', 'ASC'] ],
-			plain: false,
-			limit: 12,
-		});
+		var query = tags_query( req );
+		query.limit = 12;
+		var tags = db.Tag.findAll( query );
 		
 		Promise.all( [ exts, authors, tags ] )
 			.then( function( results )
@@ -68,14 +86,7 @@ routes.routemulti( router, null, [
 // Tags
 [ 'get', /tags(\.json)?$/, [ function tags( req, res )
 	{
-		// TODO: can we add pl scoping to tags?
-		
-		db.Tag.aggregate( 'tag', 'count', {
-			attributes: [ 'tag' ],
-			group: 'tag',
-			order: [ ['count', 'DESC'], ['tag', 'ASC'] ],
-			plain: false,
-		})
+		db.Tag.findAll( tags_query( req ) )
 			.then( function( results )
 			{
 				if ( req.params[0] == '.json' )
