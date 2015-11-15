@@ -48,12 +48,24 @@ router.param( 'slug', function( req, res, next, slug )
 	}
 	
 	var path = req.route.path,
-	query = { where: { slug: slug } };
+	query = {
+		where: { slug: slug },
+		include: [],
+	};
 	
 	// Include the tags when required
 	if ( /:slug(\/edit)?$/.test( path ) )
 	{
-		query.include = [ db.Tag ];
+		query.include.push( db.Tag );
+	}
+	
+	// The main extension display page gets some extra things
+	if ( /:slug$/.test( path ) )
+	{
+		if ( req.user )
+		{
+			query.include.push( db.Request );
+		}
 	}
 	
 	// Find this extension
@@ -247,6 +259,11 @@ routes.routemulti( router, 'extensions', [
 			documentation: ext.documentation || '',
 			tags: ext.sortedTags(),
 		};
+		if ( ext.Requests )
+		{
+			data.approvalRequests = ext.Requests.filter( function( request ) { return !request.maintainership; } );
+			data.maintainershipRequests = ext.Requests.filter( function( request ) { return request.maintainership; } );
+		}
 		if ( req.session.extensions )
 		{
 			data.userext = req.session.extensions[ ext.slug ];
@@ -337,6 +354,37 @@ routes.routemulti( router, 'extensions', [
 					msg: 'Extension settings saved',
 				};
 				res.redirect( '/extensions/' + ext.slug + '/edit' );
+			});
+	}
+] ],
+
+// Submit an extension for Public Library approval
+[ 'get', ':slug/approval', [ requireEditThisPermissions, function approvalRequest( req, res )
+	{
+		res.render( 'extensions-approval-request', {} );
+	}
+] ],
+
+// Create an extension approval request
+[ 'post', ':slug/approval', [ requireEditThisPermissions, urlencodedParser, function saveApprovalRequest( req, res )
+	{
+		var ext = req.extension;
+		db.Request.create({
+			ExtensionId: ext.id,
+			maintainership: false,
+			requester: {
+				displayName: req.user.displayName,
+				email: req.user.email,
+			},
+			message: _.trim( req.body.message ),
+		})
+			.then( function()
+			{
+				req.session.alert = {
+					type: 'Success',
+					msg: 'Extension approval request submitted',
+				};
+				res.redirect( '/extensions/' + ext.slug );
 			});
 	}
 ] ],

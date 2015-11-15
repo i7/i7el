@@ -37,30 +37,46 @@ routes.routemulti( router, null, [
 [ 'get', '', [ showalert, function index( req, res )
 	{
 		var Extension = db.Extension.pl_scope( req );
+		var promises = [];
 		
 		// The main query
-		var exts = Extension.findAndCountAll({
+		promises.push( Extension.findAndCountAll({
 			order: [[ db.Sequelize.json( "data#>'{current,createdAt}'" ), 'DESC' ]],
 			limit: 10,
-		});
+		}) );
 		
 		// Stats
-		var authors = Extension.aggregate( 'author', 'count', { distinct: true } );
+		promises.push( Extension.aggregate( 'author', 'count', { distinct: true } ) );
 		
 		var query = tags_query( req );
 		query.limit = 12;
-		var tags = db.Tag.findAll( query );
+		promises.push( db.Tag.findAll( query ) );
 		
-		Promise.all( [ exts, authors, tags ] )
+		// Requests
+		if ( req.user )
+		{
+			if ( req.user.can.admin )
+			{
+				promises.push( db.sequelize.query( 'SELECT SUM( CASE WHEN maintainership THEN 1 ELSE 0 END ) AS maintainershipcount, SUM( CASE WHEN maintainership THEN 0 ELSE 1 END ) AS approvalcount FROM "Requests";', { type: db.sequelize.QueryTypes.SELECT } ) );
+			}
+		}
+		
+		// promises = [ extensions, authors, tags, requests ]
+		Promise.all( promises )
 			.then( function( results )
 			{
-				res.render( 'index', {
+				var data = {
 					extensions: results[0],
 					stats: {
 						authors: results[1],
 						tags: results[2],
 					},
-				});
+				};
+				if ( results[3] )
+				{
+					data.requests = results[3][0];
+				}
+				res.render( 'index', data );
 			});
 	}
 ] ],

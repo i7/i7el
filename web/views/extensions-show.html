@@ -82,8 +82,16 @@
 	{% if user and user.can.editthis %}
 		<h2>Actions</h2>
 		<div class="list-group">
-			<a class="list-group-item" href="/extensions/new">{{ macros.icon( 'upload fa-fw' ) }} Upload a new version</a>
-			<a class="list-group-item" href="/extensions/{{ slug }}/edit">{{ macros.icon( 'pencil fa-fw' ) }} Edit</a>
+			{% if user.can.editthis %}
+				<a class="list-group-item" href="/extensions/new">{{ macros.icon( 'upload fa-fw' ) }} Upload a new version</a>
+				<a class="list-group-item" href="/extensions/{{ slug }}/edit">{{ macros.icon( 'pencil fa-fw' ) }} Edit</a>
+				{% if not approved and approvalRequests.length == 0 %}
+					<a class="list-group-item" href="/extensions/{{ slug }}/approval">{{ macros.icon( 'check-circle fa-fw' ) }} Submit extension for Public Library approval</a>
+				{% endif %}
+				{% if not approved and approvalRequests.length > 0 %}
+					<a class="list-group-item">{{ macros.icon( 'check-circle fa-fw' ) }} Public Library approval request pending</a>
+				{% endif %}
+			{% endif %}
 		</div>
 	{% endif %}
 </div>

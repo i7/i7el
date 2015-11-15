@@ -40,11 +40,14 @@ db.setup = function()
 	var Setting = db.Setting = sequelize.import( __dirname + '/Setting.js' );
 	var Version = db.Version = sequelize.import( __dirname + '/Version.js' );
 	var Extension = db.Extension = sequelize.import( __dirname + '/Extension.js' );
+	var Request = db.Request = sequelize.import( __dirname + '/Request.js' );
 	var Tag = db.Tag = sequelize.import( __dirname + '/Tag.js' );
 
 	// Set up the relations
 	Version.belongsTo( Extension );
 	Extension.hasMany( Version );
+	Request.belongsTo( Extension );
+	Extension.hasMany( Request );
 	Tag.belongsTo( Extension );
 	Extension.hasMany( Tag );
 	

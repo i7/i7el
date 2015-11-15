@@ -25,6 +25,9 @@
 			{% endif %}
 			{% if user.can.admin %}
 				<a class="list-group-item" href="/admin">{{ macros.icon( 'cog fa-fw' ) }} Admin</a>
+				{% if requests.approvalcount > 0 %}
+					<a class="list-group-item" href="/admin/approvals">{{ macros.icon( 'check-circle fa-fw' ) }} Public Library approval requests <span class="badge">{{ requests.approvalcount }}</span></a>
+				{% endif %}
 			{% endif %}
 			<a class="list-group-item" href="/logout">{{ macros.icon( 'sign-out fa-fw' ) }} Sign out</a>
 		{% else %}
