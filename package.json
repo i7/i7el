@@ -1,6 +1,6 @@
 {
   "name": "i7el",
-  "version": "0.1.0",
+  "version": "1.0.0",
   "description": "Inform 7 Extensions Library",
   "main": "main.js",
   "dependencies": {
@@ -18,7 +18,7 @@
     "pg": "^4.2.0",
     "pg-hstore": "^2.3.2",
     "search-text-tokenizer": "^2.0.0",
-    "sequelize": "^3.4.1",
+    "sequelize": "^3.14.1",
     "session-file-store": "0.0.22",
     "speakingurl": "^7.0.0",
     "validator": "^4.0.5"

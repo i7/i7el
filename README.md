@@ -1,7 +1,7 @@
 i7el - The Inform 7 Extensions Library
 ======================================
 
-[![npm dependencies](https://img.shields.io/david/i7/i7el.svg)](https://david-dm.org/i7/i7el) [![cdnjs dependencies](https://img.shields.io/david/dev/i7i7el.svg?label=cdnjs)](https://david-dm.org/i7/i7el#info=devDependencies)
+[![npm dependencies](https://img.shields.io/david/i7/i7el.svg)](https://david-dm.org/i7/i7el) [![cdnjs dependencies](https://img.shields.io/david/dev/i7/i7el.svg?label=cdnjs)](https://david-dm.org/i7/i7el#info=devDependencies)
 
 An Inform 7 extensions library web service, written with node.js
 
