@@ -129,6 +129,10 @@ module.exports = function( sequelize, DataTypes )
 			{
 				return this.Tags.map( function( tag ) { return tag.tag; } ).sort();
 			},
+			fullTitle: function()
+			{
+				return this.title + ' by ' + this.author;
+			},
 		},
 	});
 };

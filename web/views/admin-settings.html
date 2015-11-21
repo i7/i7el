@@ -34,6 +34,21 @@ Admin Settings -
 			</div>
 		</div>
 	</div>
+	<h2>Email settings</h2>
+	<div class="form-group">
+		<label for="postmark">Postmark key</label>
+		<div class="input-group">
+			<span class="input-group-addon">{{ macros.icon( 'envelope fa-fw' ) }}</span>
+			<input type="text" class="form-control" name="postmark" id="postmark" value="{{ settings.get( 'postmark' ) }}">
+		</div>
+	</div>
+	<div class="form-group">
+		<label for="sender">Notifications sender email</label>
+		<div class="input-group">
+			<span class="input-group-addon">{{ macros.icon( 'envelope fa-fw' ) }}</span>
+			<input type="email" class="form-control" name="sender" id="sender" value="{{ settings.get( 'sender' ) }}">
+		</div>
+	</div>
 	<h2>User authentication settings</h2>
 	<div class="form-group">
 		<label for="sessionsecret">Session secret</label>

@@ -1,0 +1,4 @@
+{% macro header( tag, text ) %}<{{ tag }}>{{ text }}</{{ tag }}>{%- endmacro %}
+
+{% macro h1() %}{{ header( 'h1', caller() ) }}{% endmacro %}
+{% macro h2() %}{{ header( 'h2', caller() ) }}{% endmacro %}

@@ -1,0 +1,5 @@
+{% extends 'email-layout.html' %}
+
+{% block content %}
+{% call m.h1() %}Good news! {{ extension.fullTitle() }} has been approved!{% endcall %}
+{% endblock %}

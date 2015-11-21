@@ -5,6 +5,7 @@ var urlencodedParser = require( 'body-parser' ).urlencoded({ extended: false });
 
 var db = require( '../../db' );
 var routes = require( '../routes.js' );
+var email = require( '../email.js' );
 var util = require( '../util.js' );
 
 var requireadmin = util.requirePermission( 'admin' );
@@ -46,6 +47,8 @@ routes.routemulti( router, 'admin', [
 		core_settings.set( 'releases', normifyresults( req.body.releases ).reverse() );
 		core_settings.set( 'upload_limit', req.body.upload_limit );
 		core_settings.set( 'sessionsecret', req.body.sessionsecret );
+		core_settings.set( 'postmark', req.body.postmark );
+		core_settings.set( 'sender', req.body.sender );
 		core_settings.set( 'google', {
 			key: req.body.googlekey,
 			secret: req.body.googlesecret,
@@ -89,11 +92,19 @@ routes.routemulti( router, 'admin', [
 				{
 					request.Extension.approved = true;
 					promises.push( request.Extension.save() );
-					msg = request.Extension.title + ' by ' + request.Extension.author + ' approved for the Public Library';
+					msg = request.Extension.fullTitle() + ' approved for the Public Library';
+					
+					promises.push( email.send({
+						template: 'email-extension-approval.html',
+						to: request.requester,
+						subject: request.Extension.fullTitle() + ' has been approved!',
+						tag: 'PublicLibraryApprovalRequest',
+						extension: request.Extension,
+					}) );
 				}
 				else
 				{
-					msg = request.Extension.title + ' by ' + request.Extension.author + ' has not been approved for the Public Library';
+					msg = request.Extension.fullTitle() + ' has not been approved for the Public Library';
 				}
 				promises.push( request.destroy() );
 				
@@ -105,6 +116,11 @@ routes.routemulti( router, 'admin', [
 							msg: msg,
 						};
 						res.redirect ( '/admin/approvals' );
+					})
+					// TODO generalise these errors...
+					.catch( function( err )
+					{
+						console.error( err.stack );
 					});
 			});
 	}

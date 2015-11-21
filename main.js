@@ -22,4 +22,8 @@ db.setup()
 		{
 			console.log( 'i7el: Express server listening on port ' + app.get( 'port' ) );
 		});
+	})
+	.catch( function( err )
+	{
+		console.error( err.stack );
 	});

@@ -1,0 +1,5 @@
+{% macro header( symbol, text ) %}{{ text }}
+{{ symbol.repeat( text.length ) }}{% endmacro %}
+
+{% macro h1() %}{{ header( '=', caller() ) }}{% endmacro %}
+{% macro h2() %}{{ header( '-', caller() ) }}{% endmacro %}

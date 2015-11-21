@@ -7,6 +7,7 @@ var nunjucks = require( 'nunjucks' );
 
 var authentication = require( './authentication.js' );
 var routes = require( './routes.js' );
+var email = require( './email.js' );
 var util = require( './util.js' );
 
 var app = express();
@@ -49,6 +50,8 @@ app.use( function( req, res, next )
 app.use( router );
 
 routes.addroutes( app, router );
+
+email.setup();
 
 exports.app = app;
 exports.router = router;
