@@ -57,6 +57,59 @@ routes.routemulti( router, 'admin', [
 	}
 ] ],
 
+[ 'get', 'approvals', [ requireadmin, showalert, function getApprovalRequests( req, res )
+	{
+		db.Request.findAll({
+			where: { maintainership: false },
+			include: [ db.Extension ],
+			order: [[ 'createdAt', 'ASC' ]],
+		})
+			.then( function( results )
+			{
+				var data = {
+					requests: results,
+					current: 'approvals',
+				};
+				res.render( 'admin-approvals', data );
+			});
+	}
+] ],
+
+[ 'post', 'approvals', [ requireadmin, urlencodedParser, function approveExts( req, res )
+	{
+		var msg, promises = [];
+		
+		db.Request.findOne({
+			where: { id: req.body.id },
+			include: [ db.Extension ],
+		})
+			.then( function( request )
+			{
+				if ( +req.body.approve )
+				{
+					request.Extension.approved = true;
+					promises.push( request.Extension.save() );
+					msg = request.Extension.title + ' by ' + request.Extension.author + ' approved for the Public Library';
+				}
+				else
+				{
+					msg = request.Extension.title + ' by ' + request.Extension.author + ' has not been approved for the Public Library';
+				}
+				promises.push( request.destroy() );
+				
+				Promise.all( promises )
+					.then( function()
+					{
+						req.session.alert = {
+							type: 'Success',
+							msg: msg,
+						};
+						res.redirect ( '/admin/approvals' );
+					});
+			});
+	}
+] ],
+
 [ 'get', 'tools', [ requireadmin, showalert, function tools( req, res )
 	{
 		if ( req.query.method == 'update' )

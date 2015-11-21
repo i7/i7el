@@ -3,8 +3,9 @@
 {% block content %}
 <nav class="col-md-3" style="margin: 20px 0 0">
 	<ul class="nav nav-pills nav-stacked">
-		<li role="presentation" {% if current == 'settings' %}class="active"{% endif %}><a href="/admin">Settings</a></li>
-		<li role="presentation" {% if current == 'tools' %}class="active"{% endif %}><a href="/admin/tools">Tools</a></li>
+		<li role="presentation" {% if current == 'settings' %}class="active"{% endif %}><a href="/admin">{{ macros.icon( 'cog fa-fw' ) }} Settings</a></li>
+		<li role="presentation" {% if current == 'approvals' %}class="active"{% endif %}><a href="/admin/approvals">{{ macros.icon( 'check-circle fa-fw' ) }} Approval requests</a></li>
+		<li role="presentation" {% if current == 'tools' %}class="active"{% endif %}><a href="/admin/tools">{{ macros.icon( 'wrench fa-fw' ) }} Tools</a></li>
 	</ul>
 </nav>
 <div class="col-md-9">

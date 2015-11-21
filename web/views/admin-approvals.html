@@ -1,0 +1,66 @@
+{% extends 'admin-layout.html' %}
+
+{% block title %}
+Public Library approval requests - 
+{% endblock %}
+
+{% block head %}
+<script>
+$( function()
+{
+	$( '.btn-reject' ).click( function()
+	{
+		var $this = $( this )
+		$( $this.data( 'target' ) )
+			.removeClass( 'hidden' )
+			.find( 'textarea' ).focus();
+		$this.hide();
+	});
+});
+</script>
+{% endblock %}
+
+{% block admincontent %}
+<h1>Public Library approval requests</h1>
+{{ macros.alert( alert ) }}
+{% if requests.length == 0 %}
+	<p>No pending approval requests
+{% else %}
+	<p>{{ requests.length }} pending request{% if requests.length > 1 %}s{% endif %}
+	{% for request in requests %}
+		<form action="/admin/approvals" method="post" class="form-horizontal approval">
+			<h2><a href="/extensions/{{ request.Extension.slug }}">{{ request.Extension.title }} by {{ request.Extension.author }}</a></h2>
+			<div class="form-group form-group-label">
+				<label class="col-sm-3 control-label">Submitter</label>
+				<div class="col-sm-9"><p class="form-control-static">{{ request.requester.displayName }} &lt;{{ request.requester.email }}&gt;</p></div>
+			</div>
+			<div class="form-group form-group-label">
+				<label class="col-sm-3 control-label">Submission date</label>
+				<div class="col-sm-9"><p class="form-control-static">{{ request.createdAt|date('MMMM D, YYYY') }}</p></div>
+			</div>
+			<div class="form-group">
+				<label class="col-sm-3 control-label">Message</label>
+				<div class="col-sm-9"><p class="form-control-static raw-text">{% if request.message %}{{ request.message }}{% else %}<i>None given</i>{% endif %}</p></div>
+			</div>
+			<div class="form-group">
+				<div class="col-sm-offset-3 col-sm-9">
+					<input type="hidden" name="id" value="{{ request.id }}">
+					<button name="approve" value="1" type="submit" class="btn btn-success">Approve</button>
+					<a class="btn btn-danger btn-reject" role="button" data-target="#message{{ request.id }}">Reject</a>
+				</div>
+			</div>
+			<div id="message{{ request.id }}" class="hidden">
+				<div class="form-group">
+					<label for="message" class="col-sm-3 control-label">Message</label>
+					<div class="col-sm-9"><textarea class="form-control" rows="5" id="message" name="message" placeholder="Message to send to submitter"></textarea></div>
+				</div>
+				<div class="form-group">
+					<div class="col-sm-offset-3 col-sm-9">
+						<button name="approve" value="0" type="submit" class="btn btn-danger">Reject</button>
+					</div>
+				</div>
+			</div>
+		</form>
+	{% endfor %}
+{% endif %}
+{% endblock %}

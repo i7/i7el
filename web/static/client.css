@@ -55,6 +55,16 @@ h1 small
 	vertical-align: middle;
 }
 
+.hidden
+{
+	display: none;
+}
+
+.raw-text
+{
+	white-space: pre-wrap;
+}
+
 .text-wrap
 {
 	white-space: normal;
@@ -132,6 +142,11 @@ div.bootstrap-tagsinput
 	border-top-left-radius: 0px;
 	border-bottom-left-radius: 0px;
 	width: 100%;
+}
+
+form.approval .form-group-label
+{
+	margin-bottom: 0;
 }
 
 .outdated

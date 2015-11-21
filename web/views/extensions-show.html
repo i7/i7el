@@ -89,7 +89,7 @@
 					<a class="list-group-item" href="/extensions/{{ slug }}/approval">{{ macros.icon( 'check-circle fa-fw' ) }} Submit extension for Public Library approval</a>
 				{% endif %}
 				{% if not approved and approvalRequests.length > 0 %}
-					<a class="list-group-item">{{ macros.icon( 'check-circle fa-fw' ) }} Public Library approval request pending</a>
+					<a class="list-group-item"{% if user.can.admin %} href="/admin/approvals"{% endif %}>{{ macros.icon( 'check-circle fa-fw' ) }} Public Library approval request pending</a>
 				{% endif %}
 			{% endif %}
 		</div>
@@ -105,6 +105,6 @@
 		{% endfor %}
 	{% endif %}
 	<h2>Documentation</h2>
-	<p style="white-space: pre-wrap;">{% if documentation %}{{ documentation }}{% else %}<i>No documentation provided</i>{% endif %}</p>
+	<p class="raw-text">{% if documentation %}{{ documentation }}{% else %}<i>No documentation provided</i>{% endif %}</p>
 </div>
 {% endblock %}
